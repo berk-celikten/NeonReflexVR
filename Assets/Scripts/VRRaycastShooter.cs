@@ -33,7 +33,9 @@ namespace NeonReflexVR
                 Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
             {
                 end = hit.point;
-                if (hit.collider.TryGetComponent<TestTargetFeedback>(out var target))
+                if (hit.collider.TryGetComponent<Target>(out var spawnedTarget))
+                    targetHit = spawnedTarget.TryHit();
+                else if (hit.collider.TryGetComponent<TestTargetFeedback>(out var target))
                 {
                     target.Flash();
                     targetHit = true;

@@ -31,12 +31,12 @@ Ana hedef Windows PC VR / Quest Link-Air Link'tir. Android APK/ADB dağıtımı 
 - [x] Input, Raycast, engel, materyal koruma ve sahne referanslarını EditMode ile doğrula (18/18).
 - [x] Kullanıcıyla Quest 3 / Link üzerinde sağ trigger, lazer ve küp renk geri bildirimini doğrula.
 - [x] Aynı shooter ile sol Activate action'ını ve ayrı lazeri bağla; çift el input/isabet testlerini geçir.
-- [ ] Quest 3 / Link üzerinde sol/sağ tek atış, eşzamanlı/hızlı isabet ve tracking regresyonunu doğrula.
+- [x] Kullanıcı Aşama 3 çift el fiziksel testinin 7 kontrolünü Quest 3 / Link ile doğruladı.
 
 ## 4. Hedefler ve isabet sistemi
-- [ ] Hedef prefabı, görünüm ve güvenli konumlandırma alanını oluştur.
-- [ ] Hedef üretimi, vurulma ve yeniden üretim davranışını uygula.
-- [ ] İsabet geri bildirimi ve nesne yaşam döngüsünü test et.
+- [x] Sphere Target prefabı, Unlit görünüm ve başlangıç bakışına sabit güvenli bölgeyi oluştur.
+- [x] Üç hedef; tek isabet kabulü, beyaz flash sonrası değiştirme ve 5 s yenilemeyi uygula.
+- [x] Sayı/sınırlar/çakışmalar/isabet/eşzamanlı atış/yenileme ve temizliği test et; 25/25 EditMode.
 - [ ] Hedef okunabilirliğini ve erişilebilirliğini cihazda doğrula.
 
 ## 5. 60 saniyelik oyun döngüsü

@@ -14,15 +14,15 @@ Yeni oturumda önce [docs/STATUS.md](docs/STATUS.md), ardından yalnızca görev
 
 Unity Hub üzerinden projeyi `6000.3.26f1` ile açın. PC VR hedefi Windows x64 / Mono'dur. Windows XR ayarlarında OpenXR Loader, başlangıçta XR başlatma ve Oculus Touch Controller Profile etkindir.
 
-PC'de Meta Horizon Link'i aktif OpenXR runtime yapın ve gözlükten Quest Link/Air Link bağlantısını başlatın. Ardından `Assets/Scenes/GameScene.unity` ile Unity Play Mode'u veya `Builds/Windows-DualShooting/NeonReflexVR.exe` uygulamasını kullanın. EXE, yanındaki Data klasörü ve DLL'lerle birlikte tutulmalıdır. Temel PC VR kullanımında gözlüğe APK yükleme/ADB yetkilendirmesi yapılmaz. [Meta Link yönergesi](https://developers.meta.com/vr/documentation/unity/unity-link/).
+PC'de Meta Horizon Link'i aktif OpenXR runtime yapın ve gözlükten Quest Link/Air Link bağlantısını başlatın. Ardından `Assets/Scenes/GameScene.unity` ile Unity Play Mode'u veya `Builds/Windows-Targets/NeonReflexVR.exe` uygulamasını kullanın. EXE, yanındaki Data klasörü ve DLL'lerle birlikte tutulmalıdır. Temel PC VR kullanımında gözlüğe APK yükleme/ADB yetkilendirmesi yapılmaz. [Meta Link yönergesi](https://developers.meta.com/vr/documentation/unity/unity-link/).
 
 ## Mevcut durum
 
 GameScene'de XR Origin, tek Main Camera/Audio Listener, iki tracked kontrolcü, zemin ve üç renkli küp vardır. Input System TrackedPoseDriver bileşenleri resmî XRI Head/Left/Right action referanslarını kullanır. Materyaller URP Unlit'tir. SampleScene korunur ve GameScene build listesinde ilk sıradadır.
 
-Windows Development build başarılıdır; kullanıcı Link üzerinden VR görüntü, baş ve iki kontrolcü takibini fiziksel gözlükte doğrulamıştır. Göz yüksekliği, recenter, tracking kaybından dönüş ve uzun süreli kararlılık testleri beklemektedir. Her iki trigger ile bağımsız tek Raycast atışı, ayrı kısa lazerler ve üç test kübünde geçici beyaz isabet geri bildirimi hazırdır. Sağ elle ateş etme kullanıcı tarafından fiziksel olarak doğrulandı; sol/eşzamanlı atış testi beklemektedir; skor, zamanlayıcı, hedef üretimi ve locomotion henüz yoktur.
+Windows Development build başarılıdır; kullanıcı Link üzerinden VR görüntü, baş ve iki kontrolcü takibini fiziksel gözlükte doğrulamıştır. Göz yüksekliği, recenter, tracking kaybından dönüş ve uzun süreli kararlılık testleri beklemektedir. Her iki trigger ile bağımsız tek Raycast atışı, ayrı kısa lazerler ve üç test kübünde geçici beyaz isabet geri bildirimi hazırdır. Çift el fiziksel testinin 7 kontrolü kullanıcı tarafından doğrulandı. TargetSpawner başlangıç bakışının önünde üç rastgele sphere hedef oluşturur; tek isabet sonrası beyaz flash ile, vurulmazsa 5 saniye sonra yeniler. Hedeflerin fiziksel testi beklemektedir; skor, oturum sayacı ve locomotion henüz yoktur.
 
-Sahne ve ilk ateş etme sistemi için 18/18 EditMode testi geçti. Windows build 0 hata / 20 uyarıyla tamamlandı; URP geçiş uyarıları ve diğer bilinen durumlar STATUS'ta kayıtlıdır. Kurulum otomasyonu `Assets/Editor/Setup/GameSceneSetup.cs`, ateş etme ekleme otomasyonu `Assets/Editor/Setup/ShootingSceneSetup.cs`; testler `Assets/Tests/EditMode` altındadır.
+Sahne ve ilk ateş etme sistemi için 25/25 EditMode testi geçti. Windows build 0 hata / 20 uyarıyla tamamlandı; URP geçiş uyarıları ve diğer bilinen durumlar STATUS'ta kayıtlıdır. Kurulum otomasyonu `Assets/Editor/Setup/GameSceneSetup.cs`, ateş etme ekleme otomasyonu `Assets/Editor/Setup/ShootingSceneSetup.cs`; testler `Assets/Tests/EditMode` altındadır.
 
 ## Git ve lisanslar
 
