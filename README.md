@@ -17,13 +17,13 @@ Unity Pipeline, Unity CLI'nin Editor ile iletişimini sağlayan pakettir: [Unity
 
 ## Projeyi açma
 
-Unity Hub üzerinden bu klasörü Unity `6000.3.26f1` ile açın. `Assets`, `Packages` ve `ProjectSettings` proje kökünde birlikte bulunmalıdır. Hedef cihaz derlemesi için Android araçlarının ve XR yapılandırmasının sonraki aşamada doğrulanması gerekmektedir.
+Unity Hub üzerinden bu klasörü Unity `6000.3.26f1` ile açın. `Assets`, `Packages` ve `ProjectSettings` proje kökünde birlikte bulunmalıdır. Android araçları ve XR yapılandırması doğrulanmıştır. İlk APK aşamasında Target API/SDK seçimi ve cihaz bağlantısı kontrol edilmelidir.
 
 ## Mevcut aşama
 
 Quest 3 standalone için Android XR altyapısı ve ilk VR test sahnesi GameScene hazırlanmıştır. Yeni oyun mekaniği eklenmemiştir. Mevcut SampleScene ve varlıklar korunmuştur. Quest 3 cihaz testi veya Android oyuncu derlemesi yapılmamıştır.
 
-Mevcut Editor.log içinde C# derleme hatası görülmemiş ve son script derlemesinin başarılı olduğu kaydedilmiştir. Logda `Native extension for Android target not found` mesajı vardır; Android derleme desteği ayrıca incelenmelidir. AssetImportWorker loglarında `-noUpm` nedeniyle Package Manager başlatılamadığı ve `Curl error 3` URL hatası kayıtları bulunmaktadır. Bunların mevcut ana Editor oturumunu engellediği doğrulanmamıştır.
+Son doğrulanan sahne milestone'unda derleme başarılı, 7/7 EditMode testi geçti ve Console 0 hata / 0 uyarı gösterdi. Önceki Android desteği ve Package Manager log kayıtları güncel hata olarak değerlendirilmemelidir. Yeni oturumlarda önce [docs/STATUS.md](docs/STATUS.md), gerektiğinde [ilgili ROADMAP aşaması](docs/ROADMAP.md) okunmalıdır.
 
 ## Git düzeni
 
