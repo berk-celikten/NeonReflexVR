@@ -67,9 +67,26 @@ Unity Technologies SF (“Unity”) grants to you a worldwide, non-exclusive, no
 
 change log (https://unity.com/legal/licenses/unity-companion-license/changelog)
 
+## XR Interaction Toolkit Starter Assets input actions
+
+The following Unity-authored files are copied unchanged from the installed `com.unity.xr.interaction.toolkit` version `3.3.2`, `Samples~/Starter Assets/`:
+
+- `Assets/Input/XRI Default Input Actions.inputactions`
+- `Assets/Input/XRI Default Input Actions.inputactions.meta`
+
+The original input actions, binding IDs and metadata GUID are preserved. This is a selective copy of the official input asset; the Starter Assets demo scene, models, scripts, locomotion prefabs and gesture implementation are not redistributed here.
+
+The package's original copyright and license notice is reproduced below. The full Unity Companion License text earlier in this document also accompanies this Unity-authored input asset and its metadata; it does not apply to independently authored NeonReflexVR game code or Editor/test automation.
+
+XR Interaction Toolkit copyright © 2026 Unity Technologies
+
+Licensed under the Unity Companion License for Unity-dependent projects (see [Unity Companion License](http://www.unity3d.com/legal/licenses/Unity_Companion_License)).
+
+Unless expressly provided otherwise, the Software under this license is made available strictly on an “AS IS” BASIS WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. Please review the license for details on these and other terms and conditions.
+
 ## Other dependencies and third-party components
 
-`Packages/manifest.json` and `Packages/packages-lock.json` reference Unity registry packages. Their downloaded package implementations are not included in this repository; `Library/` and `Library/PackageCache/` are excluded from Git. Those packages retain their own license and third-party notice files when resolved by Unity. This document does not replace their licenses or assign them the template's license.
+`Packages/manifest.json` and `Packages/packages-lock.json` reference Unity registry packages. Except for the specifically identified input asset above, downloaded package implementations are not included in this repository; `Library/` and `Library/PackageCache/` are excluded from Git. Those packages retain their own license and third-party notice files when resolved by Unity. This document does not replace their licenses or assign them the template's license.
 
 The bundled template's `Third Party Notices.md` contains only unfilled component placeholders and identifies no additional named third-party component. No placeholder is presented here as a verified dependency or license grant. The tracked project contains no additional imported Asset Store content identified by this review; the `licenseType: Store` metadata on some tutorial files is present in the bundled Unity template itself.
 
