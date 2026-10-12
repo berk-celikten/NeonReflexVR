@@ -733,6 +733,8 @@ GameObject:
   m_Component:
   - component: {fileID: 546377937}
   - component: {fileID: 546377936}
+  - component: {fileID: 546377939}
+  - component: {fileID: 546377938}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -752,6 +754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a5e9b1a3f5b30242a191aa3e9bc8a5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: NeonReflexVR.Runtime::NeonReflexVR.GameManager
+  audioFeedback: {fileID: 546377938}
   spawner: {fileID: 169456207}
   restartAction: {fileID: -3875704489234743591, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   statusText: {fileID: 384092205}
@@ -771,6 +774,119 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &546377938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 546377935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8ba59371a3fc7e4a929f934f66b1d3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: NeonReflexVR.Runtime::NeonReflexVR.ArcadeAudioFeedback
+  fireVolume: 0.18
+  hitVolume: 0.22
+  startVolume: 0.2
+  gameOverVolume: 0.18
+--- !u!82 &546377939
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 546377935}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 0
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &734785087
 GameObject:
   m_ObjectHideFlags: 0
@@ -1055,6 +1171,7 @@ GameObject:
   - component: {fileID: 1367123611}
   - component: {fileID: 1367123612}
   - component: {fileID: 1367123613}
+  - component: {fileID: 1367123614}
   m_Layer: 0
   m_Name: Right Controller
   m_TagString: Untagged
@@ -1165,12 +1282,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48cd77b5df5c7e54289babe3f7a30b2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: NeonReflexVR.Runtime::NeonReflexVR.VRRaycastShooter
+  hitHaptics: {fileID: 1367123614}
   gameManager: {fileID: 546377936}
   triggerAction: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   laser: {fileID: 176997876}
   range: 20
   muzzleOffset: 0.06
   laserDuration: 0.08
+--- !u!114 &1367123614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1367123610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b3238a450fafe6418bc805bf35ca3cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: NeonReflexVR.Runtime::NeonReflexVR.ControllerHitHaptics
+  hand: 5
+  amplitude: 0.12
+  duration: 0.08
 --- !u!1 &1398549074
 GameObject:
   m_ObjectHideFlags: 0
@@ -1507,6 +1640,7 @@ GameObject:
   - component: {fileID: 1813660441}
   - component: {fileID: 1813660442}
   - component: {fileID: 1813660443}
+  - component: {fileID: 1813660444}
   m_Layer: 0
   m_Name: Left Controller
   m_TagString: Untagged
@@ -1617,12 +1751,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48cd77b5df5c7e54289babe3f7a30b2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: NeonReflexVR.Runtime::NeonReflexVR.VRRaycastShooter
+  hitHaptics: {fileID: 1813660444}
   gameManager: {fileID: 546377936}
   triggerAction: {fileID: -5982496924579745919, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   laser: {fileID: 457361303}
   range: 20
   muzzleOffset: 0.06
   laserDuration: 0.08
+--- !u!114 &1813660444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813660440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b3238a450fafe6418bc805bf35ca3cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: NeonReflexVR.Runtime::NeonReflexVR.ControllerHitHaptics
+  hand: 4
+  amplitude: 0.12
+  duration: 0.08
 --- !u!1 &1980439828
 GameObject:
   m_ObjectHideFlags: 0

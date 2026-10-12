@@ -54,8 +54,11 @@ Ana hedef Windows PC VR / Quest Link-Air Link'tir. Android APK/ADB dağıtımı 
 ## 6. Arcade sunumu ve kullanılabilirlik
 - [x] 6.1 — Ready menüsü, yalnız SCORE/TIME HUD ve GAME OVER/FINAL SCORE ekranını oluştur.
 - [x] A ile başlat/yeniden oyna, HMD kontrolü, sade arcade UI ve 45 EditMode testini tamamla.
-- [ ] 6.1 — Windows-UI menü/HUD okunabilirliği ve A akışını Quest 3'te kullanıcıyla doğrula.
-- [ ] Neon görsel stil, ses ve uygun haptik geri bildirimi ekle.
+- [x] 6.1 — Kullanıcı Windows-UI menü/HUD okunabilirliği, hedef/skor, GameOver ve A akışını doğruladı.
+- [x] 6.2 — Özgün cache'li Fire/Hit/Start/GameOver sesleri ve ilk dinamik isabette doğru el haptics ekle.
+- [x] İdempotent sahne entegrasyonu, 54 EditMode testi ve Windows-Audio Development build'ini doğrula.
+- [ ] 6.2 — Quest 3 + Link ses dengesi, doğru el titreşimi ve restart'ı kullanıcıyla doğrula.
+- [ ] Neon görsel stil ve ortam sunumunu geliştir.
 - [ ] Okunabilirlik, ses dengesi, kullanıcı konforu ve sınırları doğrula.
 - [ ] Odağı kaybetme, uygulamaya geri dönme ve yeniden oynama akışlarını test et.
 

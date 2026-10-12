@@ -8,6 +8,7 @@ namespace NeonReflexVR
 
     public sealed class GameManager : MonoBehaviour
     {
+        [SerializeField] ArcadeAudioFeedback audioFeedback;
         [SerializeField] TargetSpawner spawner;
         [SerializeField] InputActionReference restartAction;
         [SerializeField] Text statusText;
@@ -20,6 +21,7 @@ namespace NeonReflexVR
         int displayedSeconds = -1;
         GameState displayedState = (GameState)(-1);
 
+        public ArcadeAudioFeedback AudioFeedback => audioFeedback;
         public GameState State { get; private set; } = GameState.Ready;
         public int Score { get; private set; }
         public float RemainingSeconds { get; private set; } = 60f;
@@ -72,6 +74,7 @@ namespace NeonReflexVR
                 spawner.Stop();
                 spawner.Initialize(position, direction, now);
             }
+            if (audioFeedback != null) audioFeedback.Play(ArcadeCue.Start);
             RefreshDisplay();
             return true;
         }
@@ -82,6 +85,7 @@ namespace NeonReflexVR
             if (RemainingSeconds <= 0f)
             {
                 State = GameState.GameOver;
+                if (audioFeedback != null) audioFeedback.Play(ArcadeCue.GameOver);
                 if (spawner != null) spawner.Stop();
             }
             else if (spawner != null) spawner.Tick(now);
@@ -94,8 +98,15 @@ namespace NeonReflexVR
             Tick(now);
             if (State != GameState.Playing || target == null || !target.TryHit(now)) return false;
             Score++;
+            if (audioFeedback != null) audioFeedback.Play(ArcadeCue.Hit);
             RefreshDisplay();
             return true;
+        }
+
+        public void PlayFireFeedback()
+        {
+            Tick(Time.time);
+            if (State == GameState.Playing && audioFeedback != null) audioFeedback.Play(ArcadeCue.Fire);
         }
 
         void PlaceUI()
