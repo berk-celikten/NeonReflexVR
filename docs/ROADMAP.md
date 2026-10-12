@@ -66,11 +66,15 @@ Ana hedef Windows PC VR / Quest Link-Air Link'tir. Android APK/ADB dağıtımı 
 - [x] Mor çizgi aliasing düzeltmesi: sonlu çizgi kapsam filtresi, SDR mor ve fade; 63/63 test, NeonLinesFix build.
 - [x] Kullanıcı cyan grid ve Windows-NeonLinesFix mor dekor çizgilerini düzgün buldu; diğer oyun sistemleri çalışıyor.
 - [x] Dış Side Rails: Z quad geometrisi, mevcut filtre shader'ı ve ayrı SDR materyal; 65/65 test ve Windows-RailsFix build.
-- [ ] Windows-RailsFix dış alt/üst kenar çizgileri, stereo stabilite, renk/fade ve performans fiziksel testi.
-- [ ] Okunabilirlik, ses dengesi, kullanıcı konforu ve sınırları doğrula.
+- [x] 6.3 — Kullanıcı RailsFix cyan/mor/dış ray, baş hareketi, renk/parlaklık/fade, akıcılık ve tüm oynanışı fiziksel doğruladı.
+- [x] Kullanıcı UI/ses dengesi, 6.3 renk/parlaklık/fade ve rahatsız edici çizgi titreşimi olmadığını doğruladı.
 - [ ] Odağı kaybetme, uygulamaya geri dönme ve yeniden oynama akışlarını test et.
 
 ## 7. Performans ve yayın adayı
+- [x] 7.1 — Development Player tanılama, FrameTiming/ProfilerRecorder/XR sayaçları ve bounded rapor altyapısı.
+- [x] Odak/pause için sayaç/expiry durdurma; hesap/unavailable ve kararlılık dahil 73/73 EditMode; Windows-Perf build.
+- [ ] 7.1 — Fiziksel FPS/p99/CPU/GPU/GC ve ölçüm overhead verilerini Quest 3 + Link ile al.
+- [ ] Ready bekleme, focus/pause geri dönüşü, HMD kaybı/recenter ve 5–10 tur native kararlılığı cihazda doğrula.
 - [ ] Windows PC ve Link oturumunda CPU/GPU, kare hızı ve bellek ölçümü yap.
 - [ ] Ölçülen darboğazları gider; renderer, materyal ve hedef üretimini optimize et.
 - [ ] Oturum, input ve cihaz regresyon testlerini tamamla.

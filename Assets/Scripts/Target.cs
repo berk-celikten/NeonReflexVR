@@ -15,6 +15,8 @@ namespace NeonReflexVR
             ExpiresAt = now + 5f;
         }
 
+        public void DelayExpiry(float seconds) => ExpiresAt += Mathf.Max(0f, seconds);
+
         public bool TryHit() => TryHit(Time.time);
 
         public bool TryHit(float now)

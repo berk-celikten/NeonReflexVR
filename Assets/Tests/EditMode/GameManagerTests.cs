@@ -225,6 +225,7 @@ namespace NeonReflexVR.Tests
             manager.StartGame(0f);
             manager.TryHit(Targets()[0], 1f);
             Assert.That(manager.Restart(2f), Is.False);
+            var cached = audio.GetClip(ArcadeCue.Start);
             for (var round = 0; round < 15; round++)
             {
                 var start = round * 61f;
@@ -234,6 +235,8 @@ namespace NeonReflexVR.Tests
                 Assert.That(manager.Score, Is.Zero);
                 Assert.That(manager.RemainingSeconds, Is.EqualTo(60f));
                 Assert.That(Targets().Length, Is.EqualTo(3));
+                Assert.That(host.GetComponents<AudioSource>().Length, Is.EqualTo(1));
+                Assert.That(audio.GetClip(ArcadeCue.Start), Is.SameAs(cached));
             }
         }
 
@@ -462,6 +465,80 @@ namespace NeonReflexVR.Tests
         public void UnsupportedHapticDeviceReturnsFalseWithoutAnError()
         {
             Assert.That(ControllerHitHaptics.TrySendImpulse(default, 0.12f, 0.08f), Is.False);
+        }
+        [Test]
+        public void ReadyWaitAndCombinedFocusPauseRequireBothSignalsBeforeStart()
+        {
+            manager.Tick(100f);
+            Assert.That(manager.RemainingSeconds, Is.EqualTo(60));
+            Assert.That(spawner.ActiveCount, Is.Zero);
+            manager.SetApplicationFocus(false, 100);
+            manager.SetApplicationPaused(true, 101);
+            manager.SetApplicationFocus(true, 110);
+            Assert.That(manager.Suspended, Is.True);
+            Assert.That(manager.StartGame(110), Is.False);
+            manager.SetApplicationPaused(false, 120);
+            Assert.That(manager.StartGame(120), Is.True);
+            Assert.That(manager.RemainingSeconds, Is.EqualTo(60));
+            Assert.That(spawner.ActiveCount, Is.EqualTo(3));
+        }
+        [Test]
+        public void FocusGapFreezesClockTargetsAndRejectsHitsWithoutDoubleApplyingResumeDelay()
+        {
+            manager.StartGame(0);
+            var targets = Targets();
+            manager.SetApplicationFocus(false, 2);
+            manager.SetApplicationFocus(false, 20);
+            manager.SetApplicationPaused(true, 25);
+            manager.Tick(100);
+            Assert.That(manager.RemainingSeconds, Is.EqualTo(58));
+            Assert.That(Targets(), Is.EqualTo(targets));
+            Assert.That(manager.TryHit(targets[0], 100), Is.False);
+            manager.PlayFireFeedback();
+            Assert.That(audio.GetRequestCount(ArcadeCue.Fire), Is.Zero);
+            Assert.That(audio.GetRequestCount(ArcadeCue.Hit), Is.Zero);
+            manager.SetApplicationFocus(true, 101);
+            Assert.That(manager.Suspended, Is.True);
+            manager.SetApplicationPaused(false, 102);
+            foreach (var target in targets) Assert.That(target.ExpiresAt, Is.EqualTo(105));
+            manager.Tick(104);
+            Assert.That(manager.RemainingSeconds, Is.EqualTo(56));
+            Assert.That(Targets(), Is.EqualTo(targets));
+            manager.Tick(160);
+            Assert.That(manager.State, Is.EqualTo(GameState.GameOver));
+            Assert.That(spawner.ActiveCount, Is.Zero);
+        }
+        [Test]
+        public void GameOverFocusReturnDoesNotRestartCreateTargetsOrLoseFinalScore()
+        {
+            manager.StartGame(0); manager.TryHit(Targets()[0], 1); manager.Tick(60);
+            manager.SetApplicationFocus(false, 61); manager.Tick(1000);
+            Assert.That(manager.Restart(1000), Is.False);
+            Assert.That(manager.Score, Is.EqualTo(1));
+            Assert.That(spawner.ActiveCount, Is.Zero);
+            Assert.That(audio.GetRequestCount(ArcadeCue.GameOver), Is.EqualTo(1));
+            manager.SetApplicationFocus(true, 1001);
+            Assert.That(manager.State, Is.EqualTo(GameState.GameOver));
+            Assert.That(manager.Restart(1002), Is.True);
+            Assert.That(manager.Score, Is.Zero);
+            Assert.That(manager.RemainingSeconds, Is.EqualTo(60));
+        }
+        [Test]
+        public void TrackingLossAndChangedPoseKeepCurrentRoundAnchorAndHudFixed()
+        {
+            spawner.View.gameObject.AddComponent<UnityEngine.InputSystem.XR.TrackedPoseDriver>();
+            var hmd = InputSystem.AddDevice<UnityEngine.InputSystem.XR.XRHMD>();
+            Set(hmd.centerEyePosition, eye); Set(hmd.centerEyeRotation, Quaternion.identity);
+            Set(hmd.trackingState, 3); Set(hmd.isTracked, 1f);
+            Assert.That(manager.StartGame(0), Is.True);
+            var positions = Targets().Select(target => target.transform.position).ToArray();
+            var hud = label.canvas.transform.position;
+            Set(hmd.isTracked, 0f); manager.Tick(1);
+            Set(hmd.centerEyePosition, eye + Vector3.right); Set(hmd.centerEyeRotation, Quaternion.Euler(0, 110, 0));
+            Set(hmd.isTracked, 1f); manager.Tick(2);
+            Assert.That(Targets().Select(target => target.transform.position), Is.EqualTo(positions));
+            Assert.That(label.canvas.transform.position, Is.EqualTo(hud));
+            Assert.That(manager.RemainingSeconds, Is.EqualTo(58));
         }
         [Test]
         public void SavedSceneBindsManagerBothShootersWorldHudAndOfficialRightAAction()

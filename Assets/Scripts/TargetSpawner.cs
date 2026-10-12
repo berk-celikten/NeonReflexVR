@@ -202,6 +202,15 @@ namespace NeonReflexVR
 
         void OnDisable() => Stop();
 
+        public void DelayClock(float seconds)
+        {
+            if (!initialized || seconds <= 0f) return;
+            for (var i = 0; i < targets.Length; i++)
+            {
+                if (targets[i] != null) targets[i].DelayExpiry(seconds);
+                nextAttempt[i] += seconds;
+            }
+        }
         public void Stop()
         {
             for (var i = 0; i < targets.Length; i++)

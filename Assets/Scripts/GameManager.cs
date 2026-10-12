@@ -17,6 +17,9 @@ namespace NeonReflexVR
         Vector3 uiDirection = Vector3.forward;
         bool menuAnchored;
         float deadline;
+        bool applicationFocused = true, applicationPaused, suspended;
+        float suspendedAt;
+        public bool Suspended => suspended;
         int displayedScore = -1;
         int displayedSeconds = -1;
         GameState displayedState = (GameState)(-1);
@@ -59,6 +62,7 @@ namespace NeonReflexVR
 
         bool BeginRound(float now)
         {
+            if (suspended) return false;
             var position = Vector3.zero;
             var direction = Vector3.forward;
             // Keep Ready/GameOver and the final score intact until a valid HMD pose is available.
@@ -80,7 +84,7 @@ namespace NeonReflexVR
         }
         public void Tick(float now)
         {
-            if (State != GameState.Playing) return;
+            if (State != GameState.Playing || suspended) return;
             RemainingSeconds = Mathf.Max(0f, deadline - now);
             if (RemainingSeconds <= 0f)
             {
@@ -96,7 +100,7 @@ namespace NeonReflexVR
         {
             // Check the deadline even if this controller runs before our LateUpdate.
             Tick(now);
-            if (State != GameState.Playing || target == null || !target.TryHit(now)) return false;
+            if (suspended || State != GameState.Playing || target == null || !target.TryHit(now)) return false;
             Score++;
             if (audioFeedback != null) audioFeedback.Play(ArcadeCue.Hit);
             RefreshDisplay();
@@ -106,9 +110,33 @@ namespace NeonReflexVR
         public void PlayFireFeedback()
         {
             Tick(Time.time);
-            if (State == GameState.Playing && audioFeedback != null) audioFeedback.Play(ArcadeCue.Fire);
+            if (!suspended && State == GameState.Playing && audioFeedback != null) audioFeedback.Play(ArcadeCue.Fire);
         }
 
+        void OnApplicationFocus(bool value) => SetApplicationFocus(value, Time.time);
+        void OnApplicationPause(bool value) => SetApplicationPaused(value, Time.time);
+        public void SetApplicationFocus(bool value, float now)
+        {
+            applicationFocused = value;
+            SetSuspended(!applicationFocused || applicationPaused, now);
+        }
+        public void SetApplicationPaused(bool value, float now)
+        {
+            applicationPaused = value;
+            SetSuspended(!applicationFocused || applicationPaused, now);
+        }
+        void SetSuspended(bool value, float now)
+        {
+            if (suspended == value) return;
+            if (value) { Tick(now); suspendedAt = now; }
+            else if (State == GameState.Playing)
+            {
+                var delay = Mathf.Max(0f, now - suspendedAt);
+                deadline += delay;
+                if (spawner != null) spawner.DelayClock(delay);
+            }
+            suspended = value;
+        }
         void PlaceUI()
         {
             if (statusText == null) return;
