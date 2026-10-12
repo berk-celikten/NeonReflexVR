@@ -57,6 +57,7 @@ namespace NeonReflexVR.Tests
             var canvas = new GameObject("Test canvas", typeof(RectTransform), typeof(Canvas));
             canvas.transform.SetParent(host.transform);
             canvas.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+            canvas.transform.localScale = Vector3.one * 0.0015f;
             var text = new GameObject("Test label", typeof(RectTransform), typeof(Text));
             text.transform.SetParent(canvas.transform);
             label = text.GetComponent<Text>();
@@ -94,17 +95,26 @@ namespace NeonReflexVR.Tests
         }
 
         [Test]
-        public void ReadyAutomaticallyStartsWithZeroScoreSixtySecondsAndThreeTargets()
+        public void ReadyWaitsWithoutTargetsOrCountdownUntilStartButtonPress()
         {
             Assert.That(manager.State, Is.EqualTo(GameState.Ready));
             LateUpdate(manager);
+            manager.Tick(100f);
+            Assert.That(manager.State, Is.EqualTo(GameState.Ready));
+            Assert.That(spawner.ActiveCount, Is.Zero);
+            Assert.That(manager.RemainingSeconds, Is.EqualTo(60f));
+            Assert.That(label.text, Does.Contain("NEON REFLEX VR"));
+            Assert.That(label.text, Does.Contain("Shoot the targets."));
+            Assert.That(label.text, Does.Contain("Score as many points as possible in 60 seconds."));
+            Assert.That(label.text, Does.Contain("Press A to Start"));
+            Assert.That(manager.TryHit(template.GetComponent<Target>(), 100f), Is.False);
+            InputTick(Key.R);
             Assert.That(manager.State, Is.EqualTo(GameState.Playing));
             Assert.That(manager.Score, Is.Zero);
             Assert.That(manager.RemainingSeconds, Is.EqualTo(60f));
             Assert.That(spawner.ActiveCount, Is.EqualTo(3));
             Assert.That(manager.Restart(Time.time), Is.False);
         }
-
         [Test]
         public void CountdownClampsToZeroAndStopsTargetsAtExactlySixtySeconds()
         {
@@ -155,9 +165,9 @@ namespace NeonReflexVR.Tests
             manager.Tick(60f);
             Assert.That(manager.TryHit(template.GetComponent<Target>(), 61f), Is.False);
             Assert.That(manager.Score, Is.EqualTo(1));
-            Assert.That(label.text, Does.Contain("Game Over"));
-            Assert.That(label.text, Does.Contain("Final Score: 1"));
-            Assert.That(label.text, Does.Contain("Press A to Restart"));
+            Assert.That(label.text, Does.Contain("GAME OVER"));
+            Assert.That(label.text, Does.Contain("FINAL SCORE: "));
+            Assert.That(label.text, Does.Contain("Press A to Play Again"));
         }
 
         VRRaycastShooter ShooterAt(Vector3 position, Vector3 aim)
@@ -225,7 +235,7 @@ namespace NeonReflexVR.Tests
         [Test]
         public void RestartRequiresNewButtonPressAfterGameOver()
         {
-            InputTick(Key.R); // Ready auto-starts; this press must not reset an active round.
+            InputTick(Key.R); // One press starts Ready; holding must not reset an active round.
             manager.TryHit(Targets()[0], Time.time);
             InputTick(Key.R);
             Assert.That(manager.Score, Is.EqualTo(1));
@@ -247,7 +257,8 @@ namespace NeonReflexVR.Tests
             manager.StartGame(0f);
             manager.TryHit(Targets()[0], 1f);
             manager.Tick(30.2f);
-            Assert.That(label.text, Is.EqualTo("Score: 1\nTime: 30"));
+            Assert.That(label.text, Does.Contain("SCORE:</color> 1"));
+            Assert.That(label.text, Does.Contain("TIME:</color> 30"));
             Assert.That(label.canvas.renderMode, Is.EqualTo(RenderMode.WorldSpace));
         }
 
@@ -301,6 +312,46 @@ namespace NeonReflexVR.Tests
             Assert.That(spawner.ActiveCount, Is.EqualTo(3));
         }
         [Test]
+        public void StartButtonDoesNotBypassHmdReadinessOrAutoStartWhenHeld()
+        {
+            spawner.View.gameObject.AddComponent<UnityEngine.InputSystem.XR.TrackedPoseDriver>();
+            var hmd = InputSystem.AddDevice<UnityEngine.InputSystem.XR.XRHMD>();
+            InputTick(Key.R);
+            Assert.That(manager.State, Is.EqualTo(GameState.Ready));
+            Assert.That(spawner.ActiveCount, Is.Zero);
+            Assert.That(manager.RemainingSeconds, Is.EqualTo(60f));
+            Set(hmd.centerEyePosition, eye);
+            Set(hmd.centerEyeRotation, Quaternion.identity);
+            Set(hmd.trackingState, 3);
+            Set(hmd.isTracked, 1f);
+            InputTick(Key.R);
+            Assert.That(manager.State, Is.EqualTo(GameState.Ready), "A held across tracking recovery is not a new press.");
+            InputTick();
+            InputTick(Key.R);
+            Assert.That(manager.State, Is.EqualTo(GameState.Playing));
+            Assert.That(spawner.ActiveCount, Is.EqualTo(3));
+        }
+
+        [Test]
+        public void HudStaysAboveTargetsAndDoesNotFollowViewDuringRound()
+        {
+            var now = Time.time;
+            manager.StartGame(now);
+            var canvas = (RectTransform)label.canvas.transform;
+            var position = canvas.position;
+            var rotation = canvas.rotation;
+            Assert.That(position.y - canvas.rect.height * canvas.lossyScale.y * 0.5f,
+                Is.GreaterThan(eye.y + 0.25f));
+            spawner.View.position += Vector3.right;
+            spawner.View.rotation = Quaternion.Euler(0f, 80f, 0f);
+            manager.Tick(now + 1.1f);
+            LateUpdate(manager);
+            Assert.That(canvas.position, Is.EqualTo(position));
+            Assert.That(canvas.rotation, Is.EqualTo(rotation));
+            Assert.That(label.text, Does.Not.Contain("Press A"));
+            Assert.That(label.text, Does.Not.Contain("NEON REFLEX VR"));
+        }
+        [Test]
         public void SavedSceneBindsManagerBothShootersWorldHudAndOfficialRightAAction()
         {
             const string path = "Assets/Scenes/GameScene.unity";
@@ -319,6 +370,12 @@ namespace NeonReflexVR.Tests
                 Assert.That(saved.StatusText.canvas.renderMode, Is.EqualTo(RenderMode.WorldSpace));
                 Assert.That(saved.StatusText.raycastTarget, Is.False);
                 Assert.That(saved.StatusText.font, Is.Not.Null);
+                Assert.That(saved.StatusText.supportRichText, Is.True);
+                var panel = new SerializedObject(saved).FindProperty("backdrop").objectReferenceValue as Image;
+                Assert.That(panel, Is.Not.Null);
+                Assert.That(panel.raycastTarget, Is.False);
+                Assert.That(panel.transform.parent, Is.EqualTo(saved.StatusText.canvas.transform));
+                Assert.That(panel.transform.GetSiblingIndex(), Is.LessThan(saved.StatusText.transform.GetSiblingIndex()));
                 var shooters = roots.SelectMany(root => root.GetComponentsInChildren<VRRaycastShooter>()).ToArray();
                 Assert.That(shooters.Length, Is.EqualTo(2));
                 foreach (var shooter in shooters)

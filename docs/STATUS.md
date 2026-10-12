@@ -1,46 +1,47 @@
 # NeonReflexVR — Durum
 
 ## Amaç ve teknoloji
-- Windows PC VR için 60 saniyelik hedef vurma arcade oyunu; Quest 3 + Link/Air Link.
-- Ana hedef Android standalone'dan PC VR'ye değiştirildi (12 Ekim 2026).
+- Windows PC VR: 60 saniyelik hedef vurma arcade oyunu; Quest 3 + Link/Air Link.
 - Unity 6.3 LTS `6000.3.26f1`; C#; URP `17.3.0`; Windows x64 / Mono.
-- XRI `3.3.2`; OpenXR `1.16.1`; XR Plug-in Management `4.6.1`; Input System `1.20.0`.
+- XRI `3.3.2`; OpenXR `1.16.1`; XR Management `4.6.1`; Input System `1.20.0`.
 - Test Framework `1.6.0`; UGUI `2.0.0`; Unity CLI `1.0.0-beta.12`; Pipeline `0.8.0-exp.1`.
-- PUBLIC repository: https://github.com/berk-celikten/NeonReflexVR — branch `main`.
+- PUBLIC https://github.com/berk-celikten/NeonReflexVR — branch `main`.
 
 ## Tamamlananlar
-- Git/GitHub, ignore kuralları ve üçüncü taraf lisans bildirimleri hazır.
-- GameScene ilk build sahnesi; SampleScene, XR Origin, kamera, tracking/input ve meta dosyaları korundu.
-- İki elde tek basışlık Raycast ve ayrı lazer; kullanıcı çift el ve Aşama 4 hedef testlerini doğruladı.
-- Sphere Target: 0,3 m, collider, Unlit; ilk isabet sonrası 0,15 s flash/yenileme, vurulmazsa 5 s yenileme.
-- Ready/Playing/GameOver; 60 s tur, dinamik hedef ilk isabetine +1 puan; oyun sonunda hedef temizliği.
-- Sağ A ile GameOver'da restart: mevcut XRI Right Locomotion/Jump; skor 0/süre 60/üç yeni hedef.
-- Sade World Space skor/süre/GameOver/Final Score/restart UI; tur boyunca sabit.
-- Kullanıcı Aşama 5 temel oyun döngüsünü çalışır buldu; hedeflerin sola yığılması gözlemlendi.
-- RandomFix: üç kapasite slotu hiçbir bölgeye bağlı değil; güvenli alanın tamamında rastgele hedefler.
-- Sol/orta/sağ seçim ağırlığı: 1/(1 + 2*bölge doluluğu + yakın kullanım); yakın kullanım her spawn'da 0,8 ile azalır.
-- Yeni hedef önce farklı bölgelere yerleştirilir; alternatifler güvenli değilse önceki bölge denenir.
-- Mesafe 2,5–3,5 m; gözden -0,5/+0,1 m yükseklik; hedefler arası en az 0,65 m.
-- Collider/görüş hattı kontrolleri korunur; 64 rastgele + 27 sınırlı fallback adayı; engelde 0,5 s retry.
-- HMD isTracked, konum+rotasyon ve geçerli merkez göz pose'u beklenir; taze input tracking-space'ten dünyaya çevrilir.
-- İlk tur ve restart valid HMD yönüne hizalanır; süre beklerken başlamaz, alan baş dönüşünü takip etmez.
-- Eski üç renkli küp yalnız GameScene'den kaldırıldı; materyal/prefab ve diğer kaynak dosyaları silinmedi.
-- Yeni paket/oyun modu/ses/partikül/pooling eklenmedi; atış, skor, süre, GameOver ve UI korundu.
+- Git/ignore/lisans bildirimleri hazır; GameScene ilk build sahnesi; SampleScene ve meta dosyaları korunur.
+- XR Origin, tek kamera/Audio Listener, HMD ve iki kontrolcü tracking/input bağlantıları hazır.
+- İki elle tek basışlık Raycast, ayrı lazer; dinamik Target ilk isabetine +1 puan.
+- Üç sphere hedef; 0,15 s isabet flash/yenileme, vurulmazsa 5 s yenileme; GameOver temizliği.
+- Serbest bölge seçimi: doluluk/yakın kullanıma ağırlık; farklı bölge tercihi; güvenli fallback/retry.
+- 2,5–3,5 m mesafe, konforlu yükseklik, 0,65 m aralık ve collider/görüş hattı kontrolleri korunur.
+- Başlangıç/restart geçerli HMD pose'una hizalanır; alan tur boyunca başı takip etmez.
+- Kullanıcı RandomFix ile bölge geçişi/denge, en fazla 3 hedef, sabit alan, çift el/skor, 60 s/GameOver/A restart'ı doğruladı.
+- Aşama 4 ve 5 ilgili fiziksel testleri tamamlandı.
+- 6.1: otomatik başlangıç kaldırıldı; Ready'de hedef yok, skor 0 ve süre 60'ta bekler.
+- Ready menüsü: NEON REFLEX VR; yönergeler; Press A to Start.
+- Sağ A: mevcut XRI Right Locomotion/Jump; yeni basış Ready'yi başlatır veya GameOver'dan yeni tur açar.
+- HMD hazır değilse A başlatamaz; basılı A tracking geri geldiğinde kendiliğinden tur başlatmaz.
+- Playing HUD yalnız SCORE/TIME; 60 s tur ve önceki skor/atış/hedef davranışları korunur.
+- GameOver: GAME OVER / FINAL SCORE / Press A to Play Again; hedef yok, skor sabit.
+- Mevcut World Space Canvas/Text yeniden kullanıldı; koyu panel, cyan/turuncu vurgu, yerleşik font.
+- Menü/sonuç göz hizasında 2 m önde; HUD gözden 0,6 m yukarıda, hedeflerin üstünde; turda sabit.
+- UI metni değer/durum değişince güncellenir; sürekli panel taşıma/UI rebuild yok.
+- Yeni paket/font/dış asset/ses/haptik/partikül/oyun modu eklenmedi.
+- Windows-GameLoop ve Windows-SpawnFix temizlendi: yaklaşık 356,7 MiB; Windows-RandomFix korundu.
 
 ## Mevcut aşama ve sıradaki görev
-- Serbest/ağırlıklı hedef dağılımı kod/test/build olarak hazır; Quest 3 fiziksel onayı bekliyor.
-- Önceki sabit bölge düzeltmesi commit'i: `d5415d7`; güncel commit için `git log -1`.
-- Sıradaki: hedeflerin bölge değiştirmesi, uzun vadeli denge, üç hedef sınırı ve sabit alanı cihazda test et.
-- Skor, 60 s/GameOver/A restart, iki el ve HUD regresyonunu cihazda kontrol et.
-- Yeni EXE: `Builds/Windows-RandomFix/NeonReflexVR.exe`; Data/DLL dosyalarıyla kullan.
-- `Builds/Windows-SpawnFix` ve Windows-GameLoop korundu; RandomFix fiziksel onayından önce eski build silinmez.
-- Sonrasında Aşama 6: VR sunumu/menü ve görsel-ses kullanılabilirlik.
+- Aşama 6.1 uygulaması/test/build tamam; Quest 3 fiziksel UI testi bekliyor.
+- Önceki RandomFix commit'i: `ed17af4`; güncel commit için `git log -1`.
+- Sıradaki: Ready'de bekleme, A ile başlama, HUD okunabilirliği/engel oluşturmama, sonuç ve A ile yeni tur testi.
+- Sonrasında Aşama 6.2 sunum iyileştirmeleri; ses/haptik bu görevde eklenmedi.
+- Yeni EXE: `Builds/Windows-UI/NeonReflexVR.exe`; Data/DLL dosyalarıyla birlikte kullan.
+- Windows-RandomFix, Windows-UI fiziksel onayına kadar silinmez.
 
 ## Doğrulama ve bilinen sorunlar
-- 43/43 EditMode testi geçti: 40 başlangıç seed'i, üç seed'de 300'er dengeli yenileme, serbest slotlar ve regresyonlar.
-- Script derlemesi başarılı; Console: 0 hata / 20 uyarı. Windows RandomFix build: 0 hata / 8 uyarı.
-- Uyarılar önceki Android→Windows oturumunun URP dizi boyutları; Editor yeniden başlatılması önerilir.
-- Diğer build uyarıları: Player'da CLI Pipeline runtime kapalı; tam Starter Assets sample klasörü yok.
-- Yeni dağılım/hizalama, kapsamlı UI okunabilirliği ve takip/recenter/kararlılık ölçümleri fiziksel test bekliyor.
-- Android artık ana hedef değil. Builds, `.utmp`, `Assets/_Recovery` Git'e yüklenmez.
-- [ROADMAP](ROADMAP.md); STATUS yalnızca milestone sonunda güncellenir.
+- 45/45 EditMode testi geçti: Ready/A/HMD engeli, HUD/sonuç metinleri, yerleşim ve önceki oyun/dağılım regresyonları.
+- Ready/HUD/GameOver Unity Game View görsel preview'ları kontrol edildi; metin kesilmesi görülmedi.
+- Script derlemesi başarılı; Console: 0 hata / 32 uyarı; Windows-UI build: 0 hata / 20 uyarı.
+- Bilinen uyarılar: eski Editor oturumunun URP dizi boyutları; Player'da CLI runtime kapalı; Samples klasörü yok.
+- 6.1 stereo UI okunabilirliği, başlangıç/sonuç ekranı ve A akışı henüz fiziksel olarak doğrulanmadı.
+- Recenter/takip kaybından dönüş/uzun süreli kararlılık ölçümleri ayrıca takip edilir.
+- Builds, Temp/Library, `.utmp`, `Assets/_Recovery` Git'e yüklenmez; [ROADMAP](ROADMAP.md).

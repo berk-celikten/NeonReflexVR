@@ -41,18 +41,20 @@ Ana hedef Windows PC VR / Quest Link-Air Link'tir. Android APK/ADB dağıtımı 
 - [x] Bölge kilidini kaldır; doluluk/yakın kullanım ağırlıklı rastgele seçim ve farklı bölge tercihi uygula.
 - [x] Geçerli HMD başlangıç/restart pose hizalaması; eski küpleri yalnız GameScene'den kaldır.
 - [x] Serbest dağılım/denge, güvenli yenileme/retry, tracking ve oyun regresyon testlerini geçir; 43/43 EditMode.
-- [ ] Windows-RandomFix serbest dağılımını, dengesini ve başlangıç hizalamasını Quest 3'te kullanıcıyla doğrula.
+- [x] Kullanıcı Windows-RandomFix bölge geçişi/denge, üç hedef sınırı ve sabit alanı Quest 3'te doğruladı.
 
 ## 5. 60 saniyelik oyun döngüsü
-- [x] Ready/Playing/GameOver ve otomatik başlangıç durumlarını oluştur.
+- [x] Ready/Playing/GameOver durumlarını oluştur; 6.1'de otomatik başlangıcı A ile menü başlangıcına dönüştür.
 - [x] 60 saniye ve Target ilk isabeti başına +1 puan; test küpleri/eşzamanlı tekrarlar puansız.
 - [x] Oturum sonu hedef temizliği, A ile restart ve değerlerin sıfırlanmasını test et; 36/36 EditMode.
 - [x] Sade World Space skor/süre/GameOver/Final Score ve restart yönergesini ekle.
 - [x] Kullanıcı Aşama 5 temel oyun döngüsünü Quest 3 / Link üzerinde çalışır buldu.
-- [ ] RandomFix sonrasında tam tur/restart/HUD cihaz regresyonunu doğrula.
+- [x] Kullanıcı RandomFix çift el/skor, 60 saniye, GameOver ve sağ A restart'ı doğruladı.
 
 ## 6. Arcade sunumu ve kullanılabilirlik
-- [ ] VR menü, sayaç/skor göstergesi ve sonuç ekranını oluştur.
+- [x] 6.1 — Ready menüsü, yalnız SCORE/TIME HUD ve GAME OVER/FINAL SCORE ekranını oluştur.
+- [x] A ile başlat/yeniden oyna, HMD kontrolü, sade arcade UI ve 45 EditMode testini tamamla.
+- [ ] 6.1 — Windows-UI menü/HUD okunabilirliği ve A akışını Quest 3'te kullanıcıyla doğrula.
 - [ ] Neon görsel stil, ses ve uygun haptik geri bildirimi ekle.
 - [ ] Okunabilirlik, ses dengesi, kullanıcı konforu ve sınırları doğrula.
 - [ ] Odağı kaybetme, uygulamaya geri dönme ve yeniden oynama akışlarını test et.
