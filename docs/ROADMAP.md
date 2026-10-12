@@ -37,12 +37,13 @@ Ana hedef Windows PC VR / Quest Link-Air Link'tir. Android APK/ADB dağıtımı 
 - [x] Sphere Target prefabı, Unlit görünüm ve başlangıç bakışına sabit güvenli bölgeyi oluştur.
 - [x] Üç hedef; tek isabet kabulü, beyaz flash sonrası değiştirme ve 5 s yenilemeyi uygula.
 - [x] Sayı/sınırlar/çakışmalar/isabet/eşzamanlı atış/yenileme ve temizliği test et; 25/25 EditMode.
-- [ ] Hedef okunabilirliğini ve erişilebilirliğini cihazda doğrula.
+- [x] Kullanıcı Aşama 4 rastgele hedef oynanışını Quest 3 + Link üzerinde doğruladı.
 
 ## 5. 60 saniyelik oyun döngüsü
-- [ ] Başlat, oynanıyor ve sonuç durumlarını oluştur.
-- [ ] 60 saniyelik sayaç, skor ve isabet sayımını uygula.
-- [ ] Oturum bitişi, yeniden başlatma ve sıfırlamayı test et.
+- [x] Ready/Playing/GameOver ve otomatik başlangıç durumlarını oluştur.
+- [x] 60 saniye ve Target ilk isabeti başına +1 puan; test küpleri/eşzamanlı tekrarlar puansız.
+- [x] Oturum sonu hedef temizliği, A ile restart ve değerlerin sıfırlanmasını test et; 36/36 EditMode.
+- [x] Sade World Space skor/süre/GameOver/Final Score ve restart yönergesini ekle.
 - [ ] Quest 3 / Link üzerinde tam oturum oynanışını doğrula.
 
 ## 6. Arcade sunumu ve kullanılabilirlik

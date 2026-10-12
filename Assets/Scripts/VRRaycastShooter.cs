@@ -6,6 +6,7 @@ namespace NeonReflexVR
     /// <summary>One raycast per trigger press; shared input ownership stays with InputActionManager.</summary>
     public sealed class VRRaycastShooter : MonoBehaviour
     {
+        [SerializeField] GameManager gameManager;
         [SerializeField] InputActionReference triggerAction;
         [SerializeField] LineRenderer laser;
         [SerializeField, Min(0.1f)] float range = 20f;
@@ -34,7 +35,7 @@ namespace NeonReflexVR
             {
                 end = hit.point;
                 if (hit.collider.TryGetComponent<Target>(out var spawnedTarget))
-                    targetHit = spawnedTarget.TryHit();
+                    targetHit = gameManager != null ? gameManager.TryHit(spawnedTarget, Time.time) : spawnedTarget.TryHit();
                 else if (hit.collider.TryGetComponent<TestTargetFeedback>(out var target))
                 {
                     target.Flash();

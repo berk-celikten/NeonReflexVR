@@ -5,6 +5,7 @@ namespace NeonReflexVR
     /// <summary>Three fixed slots; one clock, no per-target coroutine or event subscriptions.</summary>
     public sealed class TargetSpawner : MonoBehaviour
     {
+        [SerializeField] bool autoStart = true;
         [SerializeField] Target targetPrefab;
         [SerializeField] Transform view;
         readonly Target[] targets = new Target[3];
@@ -15,6 +16,7 @@ namespace NeonReflexVR
         bool initialized;
         bool warned;
 
+        public bool AutoStart => autoStart;
         public Target Prefab => targetPrefab;
         public Transform View => view;
         public int ActiveCount
@@ -29,6 +31,7 @@ namespace NeonReflexVR
 
         void LateUpdate()
         {
+            if (!autoStart) return;
             if (!initialized && view != null && targetPrefab != null)
                 Initialize(view.position, view.forward, Time.time);
             Tick(Time.time);
@@ -110,7 +113,9 @@ namespace NeonReflexVR
             else DestroyImmediate(target.gameObject);
         }
 
-        void OnDisable()
+        void OnDisable() => Stop();
+
+        public void Stop()
         {
             for (var i = 0; i < targets.Length; i++)
             {
