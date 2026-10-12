@@ -43,13 +43,7 @@ namespace NeonReflexVR.Editor
             data.renderPostProcessing = true;
             var root = scene.GetRootGameObjects().SingleOrDefault(x => x.name == "Neon Arena") ?? new GameObject("Neon Arena");
             root.layer = 2; // Ignore Raycast; children also have no colliders.
-            var grid = new Strips();
-            for (var i = -6; i <= 6; i++)
-            {
-                grid.Add(new Vector3(i, 0.012f, -6), new Vector3(i, 0.012f, 6), Vector3.up, 0.009f);
-                grid.Add(new Vector3(-6, 0.012f, i), new Vector3(6, 0.012f, i), Vector3.up, 0.009f);
-            }
-            MeshObject(root, "Neon Grid", grid, cyan);
+            ConfigureGrid(root);
             var frames = new Strips();
             foreach (var z in new[] { 6f, 8f, 10f })
             {
@@ -104,6 +98,38 @@ namespace NeonReflexVR.Editor
             RenderSettings.fog = false;
             EditorSceneManager.MarkSceneDirty(scene);
             if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Scene save failed.");
+        }
+        [MenuItem("NeonReflexVR/Fix Grid Aliasing")]
+        public static void FixGridAliasing()
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            if (EditorApplication.isPlaying || EditorApplication.isCompiling || scene.isDirty || scene.path != GameSceneSetup.ScenePath)
+                throw new InvalidOperationException("Open saved GameScene outside Play Mode.");
+            var root = scene.GetRootGameObjects().Single(x => x.name == "Neon Arena");
+            ConfigureGrid(root);
+            EditorSceneManager.MarkSceneDirty(scene);
+            if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Scene save failed.");
+        }
+        static void ConfigureGrid(GameObject root)
+        {
+            const string path = Folder + "/StableGrid.mat";
+            var shader = Shader.Find("NeonReflexVR/Stable Neon Grid");
+            if (shader == null) throw new InvalidOperationException("Stable grid shader required.");
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (material == null) { material = new Material(shader) { name = "StableGrid" }; AssetDatabase.CreateAsset(material, path); }
+            material.SetColor("_BaseColor", new Color(0.04f, 0.7f, 0.95f));
+            material.SetColor("_FloorColor", new Color(0.012f, 0.018f, 0.036f));
+            material.SetFloat("_Spacing", 1.5f);
+            material.SetFloat("_LineWidth", 0.03f);
+            material.SetFloat("_FadeStart", 3f);
+            material.SetFloat("_FadeEnd", 7f);
+            EditorUtility.SetDirty(material);
+            AssetDatabase.SaveAssetIfDirty(material);
+            var grid = new Strips();
+            grid.vertices.AddRange(new[] { new Vector3(-6, 0.012f, -6), new Vector3(-6, 0.012f, 6),
+                new Vector3(6, 0.012f, 6), new Vector3(6, 0.012f, -6) });
+            grid.indices.AddRange(new[] { 0, 1, 2, 0, 2, 3 });
+            MeshObject(root, "Neon Grid", grid, material);
         }
         static Material MaterialAsset(string name, Color color)
         {

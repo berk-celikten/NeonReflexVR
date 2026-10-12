@@ -56,12 +56,36 @@ namespace NeonReflexVR.Tests
                 Assert.That(EditorUtility.IsPersistent(mesh), Is.True);
                 Assert.That(mesh.vertexCount, Is.LessThan(150));
                 Assert.That(EditorUtility.IsPersistent(renderer.sharedMaterial), Is.True);
-                Assert.That(renderer.sharedMaterial.shader.name, Is.EqualTo("Universal Render Pipeline/Unlit"));
+                Assert.That(renderer.sharedMaterial.shader.name, Is.EqualTo(renderer.name == "Neon Grid"
+                    ? "NeonReflexVR/Stable Neon Grid" : "Universal Render Pipeline/Unlit"));
                 Assert.That(renderer.shadowCastingMode, Is.EqualTo(ShadowCastingMode.Off));
             }
             var grid = arena.transform.Find("Neon Grid").GetComponent<MeshFilter>().sharedMesh;
             Assert.That(grid.bounds.min.y, Is.GreaterThan(0f));
             Assert.That(grid.bounds.max.y, Is.LessThan(0.02f));
+        }
+        [Test]
+        public void GridUsesFilteredSingleQuadWithFadeWithoutChangingLaserBloomColors()
+        {
+            var arena = roots.Single(x => x.name == "Neon Arena");
+            var grid = arena.transform.Find("Neon Grid");
+            var mesh = grid.GetComponent<MeshFilter>().sharedMesh;
+            var material = grid.GetComponent<Renderer>().sharedMaterial;
+            Assert.That(mesh.vertexCount, Is.EqualTo(4));
+            Assert.That(mesh.triangles.Length, Is.EqualTo(6));
+            Assert.That(material.shader.isSupported, Is.True);
+            Assert.That(ShaderUtil.ShaderHasError(material.shader), Is.False);
+            Assert.That(material.passCount, Is.EqualTo(1));
+            Assert.That(material.GetTexturePropertyNames(), Is.Empty);
+            Assert.That(material.GetFloat("_Spacing"), Is.EqualTo(1.5f));
+            Assert.That(material.GetFloat("_LineWidth"), Is.InRange(0.025f, 0.04f));
+            Assert.That(material.GetFloat("_FadeStart"), Is.EqualTo(3f));
+            Assert.That(material.GetFloat("_FadeEnd"), Is.EqualTo(7f));
+            Assert.That(material.GetColor("_BaseColor").maxColorComponent, Is.LessThanOrEqualTo(1f));
+            foreach (var shooter in roots.SelectMany(x => x.GetComponentsInChildren<VRRaycastShooter>()))
+                Assert.That(shooter.Laser.sharedMaterial, Is.Not.SameAs(material));
+            var floor = roots.SelectMany(x => x.GetComponentsInChildren<Transform>()).Single(x => x.name == "Floor");
+            Assert.That(material.GetColor("_FloorColor"), Is.EqualTo(floor.GetComponent<Renderer>().sharedMaterial.GetColor("_BaseColor")));
         }
         [Test]
         public void BloomIsLowCostAndBelowUiWhiteThresholdWithOneXrCamera()

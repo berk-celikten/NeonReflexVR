@@ -125,7 +125,8 @@ namespace NeonReflexVR.Tests
             foreach (var renderer in renderers)
             {
                 Assert.That(renderer.sharedMaterial, Is.Not.Null);
-                Assert.That(renderer.sharedMaterial.shader.name, Is.EqualTo("Universal Render Pipeline/Unlit"));
+                Assert.That(renderer.sharedMaterial.shader.name, Is.EqualTo(renderer.name == "Neon Grid"
+                    ? "NeonReflexVR/Stable Neon Grid" : "Universal Render Pipeline/Unlit"));
                 Assert.That(EditorUtility.IsPersistent(renderer.sharedMaterial), Is.True);
             }
             Assert.That(Components<Light>().Single().shadows, Is.EqualTo(LightShadows.None));

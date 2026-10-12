@@ -21,7 +21,9 @@
 - Başarılı ilk isabette yalnız ateş eden el: haptics genlik 0,12 / süre 0,08 s; desteksiz cihaz sessizce atlanır.
 - Kullanıcı Windows-Audio dört ses, kontrolcü titreşimi, isabet/ıskalama ve restart geri bildirimlerini doğruladı.
 - 20b977c GitHub main'e normal push ile gönderildi ve uzak SHA doğrulandı.
-- 6.3 koyu Unlit zemin; cyan grid, mavi yan raylar ve mor uzak çerçeveler: üç ortak statik mesh/renderer.
+- 6.3 koyu zemin, cyan grid, mavi/mor dekor: üç ortak renderer; kullanıcı genel oynanış/performansı kabul edilebilir buldu.
+- GridFix: 9 mm mesh şerit yerine tek quad, özgün URP shader ile piksel kapsamı AA; 3 cm çizgi / 1,5 m aralık.
+- Grid 3–7 m mesafede solar; ayrı SDR materyal Bloom katkısını sınırlar; texture/mipmap, TAA veya global MSAA değişikliği yok.
 - Dekorasyonda collider/ışık yok; Ignore Raycast; zemin yüksekliği ve XR Origin korunur.
 - HDR turuncu Unlit hedef; mevcut beyaz _BaseColor flash/collider korunur; bağımsız ince cyan/mavi lazerler.
 - Global Bloom: yoğunluk 0,15, eşik 1,3, scatter 0,35, Quarter, dört iterasyon; kamera post-processing açık.
@@ -29,16 +31,17 @@
 - Windows-UI silindi: yaklaşık 178,3 MiB; fiziksel olarak doğrulanmış Windows-Audio'ın 333 dosyası korundu.
 
 ## Mevcut aşama ve sıradaki görev
-- 6.3 uygulama/otomatik test/Windows build tamam; Quest 3 fiziksel görsel ve performans testi bekliyor.
-- Güncel commit için `git log -1`; yeni EXE `Builds/Windows-Neon/NeonReflexVR.exe`.
-- Sıradaki: gözlükte grid/hedef/lazer okunabilirliği, Bloom konforu, HUD, iki el, ses/haptic ve restart kontrolü.
-- Windows-Audio yeni Neon sürümü kullanıcı tarafından doğrulanana kadar korunur.
+- Kullanıcı Windows-Neon oyun/HUD/skor/hedef/iki el/ses/haptic/restart'ı doğruladı; uzak grid kesikliği gözlendi.
+- GridFix uygulama/test/build tamam; yeni çizgi kalitesinin Quest 3 fiziksel testi bekliyor.
+- Güncel commit için `git log -1`; yeni EXE `Builds/Windows-NeonFix/NeonReflexVR.exe`.
+- Sıradaki: yakın/orta/uzak grid, yavaş baş hareketinde kırılma/titreşim, fade geçişi ve akıcılık kontrolü.
+- Windows-Neon ve Windows-Audio korundu; bu görevde eski build temizliği yapılmadı.
 
 ## Doğrulama ve bilinen sorunlar
-- 60/60 EditMode geçti: 54 oyun/input/ses/haptic regresyonu + altı neon referans/physics/Bloom/flash/spawn testi.
-- Derleme başarılı; Windows-Neon Development build 0 hata / 20 bilinen uyarı.
+- 61/61 EditMode geçti: tüm mevcut regresyonlar + grid shader/mesh/materyal/fade ve bağımsız lazer referansları.
+- Derleme başarılı; Windows-NeonFix Development build 0 hata / 20 bilinen uyarı.
 - Console 0 hata / 26 uyarı; URP reflection/shadow array boyutu uyarıları Editor oturumunda tekrarlanıyor.
-- Ready/Playing/GameOver masaüstü kamera önizlemeleri incelendi; stereo cihaz testi veya GPU ölçümü değildir.
-- Bloom'un stereo göz konforu ve PC/Link kare hızı henüz ölçülmedi; fiziksel test bekliyor.
+- GridFix masaüstü kamera önizlemesi incelendi; shader derleme hatası yok; stereo cihaz testi yerine geçmez.
+- Fiziksel genel performans kabul edilebilir; GPU/kare hızı ölçülmedi. GridFix titreşim/uzak çizgi testi bekliyor.
 - Recenter, takip kaybı, odak kaybı ve uzun süreli kararlılık ayrıca takip edilir.
 - Builds, Temp/Library, `.utmp`, `Assets/_Recovery` Git'e yüklenmez; [ROADMAP](ROADMAP.md).
