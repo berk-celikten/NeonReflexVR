@@ -1,0 +1,14 @@
+{
+  "triangles": 3724,
+  "materials": 4,
+  "length_metres": 0.237,
+  "unity_muzzle_local": [
+    0,
+    0,
+    0.163
+  ],
+  "unity_forward": "+Z",
+  "blender_forward": "-Y",
+  "source_parts": 47,
+  "blender_version": "5.2.0 LTS"
+}

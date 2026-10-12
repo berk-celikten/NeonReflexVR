@@ -26,21 +26,29 @@
 - Turuncu sphere'ın shader'ı yenilendi; aynı hitbox ve beyaz flash; iki lazerde çekirdek/yumuşak glow.
 - Aynı UI metinleri/akışı; kalın metin, köşe/amber çerçeve ve dekorun metne taşmasını önleyen sade opak panel.
 - Doğrulanmış grid/mor/rail shader/materyalleri ve Quarter Bloom aynen korundu.
-- Oynanış/input/tracking/ses/haptic/focus ve diagnostics C# kodları değiştirilmedi.
+- 7.3 görsel aşamasında oynanış/input/tracking/ses/haptic/focus ve diagnostics C# kodları değiştirilmedi.
+- 7.3A — Blender 5.2.0 LTS CLI/bpy ile özgün NR-7 lazer tabancası: 3.724 üçgen, dört ortak URP/Lit materyali, 23,7 cm.
+- Kaynak: Tools/Blender/create_neon_blaster.py ve NeonBlaster.blend; FBX: Assets/Art/Weapons/NeonBlaster.fbx.
+- Blender/Unity preview'ları ve yeniden üretim: Tools/Blender/previews/ ve Tools/Blender/README.md.
+- Aynı collider'sız Ignore Raycast prefabı iki tracked controller altında; +Z ileri, ölçek 1, namlu (0,0,0.163) m.
+- VRRaycastShooter yalnız visualMuzzle çizgi başlangıcını kullanır; eski 0,06 m ray origin/20 m range/isabet/score/ses/haptic korunur.
+- Namlu öncesi engelde raycast devam eder, ters lazer çizgisi oluşmaz; URP doğrulamasında emissive keyword korunur.
 
 ## Mevcut aşama ve sıradaki görev
-- 7.3 uygulama/test/Development build tamam; Quest 3 fiziksel görsel ve kısa performans kontrolü bekliyor.
-- EXE: Builds/Windows-VisualOverhaul/NeonReflexVR.exe; güncel commit için git log -1.
-- Windows-Perf ve Windows-RailsFix korundu; yeni sürüm fiziksel onayından önce silinmeyecek.
-- Sıradaki: menü/HUD okunabilirliği, hedef/lazer/isabet, yakın/uzak çizgiler ve iki tur performans karşılaştırması.
+- 7.3A silah modeli/CLI entegrasyonu/test/Windows Development build tamam; Quest 3 fiziksel onayı bekliyor.
+- EXE: Builds/Windows-BlenderGun/NeonReflexVR.exe; güncel commit için git log -1.
+- Windows-Perf, Windows-RailsFix ve Windows-VisualOverhaul korundu; eski build'ler silinmedi.
+- Sıradaki: iki el kabza/hizalama/tracking, namlu-lazer doğrultusu, stereo konfor/Bloom ve HUD/hedef görünürlüğü.
+- Çift trigger/skor/ses/haptic/60 s/GameOver/A restart ve aynı Link/72 Hz ayarlarıyla iki tur performans karşılaştırması kullanıcı testi bekliyor.
+- 7.3 arena görsellerinin önceki fiziksel onay bekleme durumu da devam ediyor.
 
 ## Doğrulama ve bilinen sınırlar
-- 82/82 EditMode geçti: önceki 73 + 9 görsel entegrasyon; shader/mesh/UI/LOS ve oyun regresyonları.
-- Derleme başarılı; Console 0 hata / 32 bilinen uyarı; son build 0 hata / 20 bilinen uyarı.
+- 89/89 EditMode geçti: önceki 73 + 9 görsel + 7 silah testi; çift el/prefab/transform/katman/collider/URP emission ve yakın engel regresyonu.
+- Import/derleme başarılı (0 compile hata/uyarı); Console 0 hata; Windows-BlenderGun build 0 hata / 20 bilinen uyarı.
 - Uyarılar: URP array cache, beklenen engelli-spawn test kaydı, Pipeline runtime config ve sample-cache.
 - Ready/Playing/GameOver ile lazer/beyaz flash Editor önizlemesi yapıldı; gerçek VR görsel onayı değildir.
 - Kullanıcının Perf raporu: Player 40–60 FPS, CPU frame 16,7–25 ms, GPU 2,7–3,3 ms; >33,3 ms spike yok, XR dropped 0.
 - Main Thread/CPU frame beklemeleri içerebilir; bu sonuç tek başına CPU darboğazı kanıtı değil.
 - 5–10 tur, native tracking kaybı/recenter, focus geri dönüşü ve ölçüm overhead kontrolleri hâlâ bekliyor.
-- Yeni görünümün gerçek stereo konforu, aliasing ve FPS/CPU/GPU etkisi kullanıcı testi bekliyor.
+- Yeni arena ve silahların gerçek stereo konforu, kabza ergonomisi, aliasing/Bloom ve FPS/CPU/GPU etkisi kullanıcı testi bekliyor.
 - Builds/_Recovery/Library/Temp/.utmp yüklenmez; [ROADMAP](ROADMAP.md).

@@ -80,6 +80,13 @@ Ana hedef Windows PC VR / Quest Link-Air Link'tir. Android APK/ADB dağıtımı 
 - [x] Doğrulanmış grid/mor/rail ve Bloom ayarlarını koru; 82/82 EditMode, Console 0 hata ve Windows-VisualOverhaul Development build.
 - [ ] 7.3 — Quest 3 + Link: yeni görünüm/okunabilirlik, aliasing/stereo konfor ve tüm oynanışı fiziksel doğrula.
 - [ ] 7.3 — Aynı Link çözünürlük/72 Hz ayarlarıyla iki tur kısa FPS/CPU/GPU karşılaştırması yap; Perf/RailsFix onaya kadar korunur.
+- [x] 7.3A — Blender 5.2.0 LTS CLI/bpy ile özgün NR-7 blaster; 3.724 üçgen, dört materyal, 23,7 cm; bevel/panel/vent/açık namlu.
+- [x] Tools/Blender script/.blend/preview kaynakları ve Assets/Art/Weapons FBX/URP materyalleri/ortak prefabı koru; yeniden üretim yönergesi ekle.
+- [x] İki tracked controller altında Ignore Raycast/collider'sız silah; +Z/ölçek/pivot/namlu doğrulaması; yalnız görsel lazer başlangıcını bağla.
+- [x] Mevcut raycast/input/isabet/skor/ses/haptic/focus/oyun döngüsünü koru; URP build emission ve namlu öncesi engel regresyonu dahil 89/89 EditMode.
+- [x] Unity CLI import/compilation/Console 0 hata ve Windows-BlenderGun Development build (0 hata/20 bilinen uyarı); Perf/RailsFix/VisualOverhaul build'lerini koru.
+- [ ] 7.3A — Quest 3 + Link'te iki el kabza/tracking/namlu-lazer hizası, yakın stereo konfor/Bloom ve HUD/hedef görünürlüğünü kullanıcı ile doğrula.
+- [ ] 7.3A — Çift trigger/skor/ses/haptic/60 s/GameOver/A restart ve iki tur aynı Link/72 Hz FPS/CPU/GPU karşılaştırmasını cihazda tamamla.
 - [ ] Ready bekleme, focus/pause geri dönüşü, HMD kaybı/recenter ve 5–10 tur native kararlılığı cihazda doğrula.
 - [ ] Windows PC ve Link oturumunda CPU/GPU, kare hızı ve bellek ölçümü yap.
 - [ ] Ölçülen darboğazları gider; renderer, materyal ve hedef üretimini optimize et.

@@ -10,6 +10,7 @@ namespace NeonReflexVR
         [SerializeField] GameManager gameManager;
         [SerializeField] InputActionReference triggerAction;
         [SerializeField] LineRenderer laser;
+        [SerializeField] Transform visualMuzzle;
         [SerializeField, Min(0.1f)] float range = 20f;
         [SerializeField, Min(0f)] float muzzleOffset = 0.06f;
         [SerializeField, Min(0.01f)] float laserDuration = 0.08f;
@@ -18,6 +19,7 @@ namespace NeonReflexVR
         public ControllerHitHaptics HitHaptics => hitHaptics;
         public InputActionReference TriggerAction => triggerAction;
         public LineRenderer Laser => laser;
+        public Transform VisualMuzzle => visualMuzzle;
 
         void LateUpdate()
         {
@@ -50,7 +52,12 @@ namespace NeonReflexVR
             }
             if (laser != null)
             {
-                laser.SetPosition(0, start);
+                // Cosmetic origin only: the verified raycast still starts at controller + 0.06 m.
+                var visualStart = visualMuzzle != null ? visualMuzzle.position : start;
+                // A blocker inside the barrel remains a hit; collapse instead of drawing backwards.
+                if (visualMuzzle != null && Vector3.Dot(end - visualStart, transform.forward) < 0f)
+                    visualStart = end;
+                laser.SetPosition(0, visualStart);
                 laser.SetPosition(1, end);
                 laser.enabled = true;
                 laserUntil = Time.unscaledTime + laserDuration;
