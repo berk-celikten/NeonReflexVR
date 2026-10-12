@@ -85,3 +85,8 @@ keystore.properties.meta
 *.apk.meta
 *.aab
 *.aab.meta
+
+# Local crash recovery and temporary build cache
+/Assets/_Recovery/
+/Assets/_Recovery.meta
+/.utmp/

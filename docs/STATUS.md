@@ -1,35 +1,38 @@
 # NeonReflexVR — Durum
 
 ## Amaç ve teknoloji
-- Meta Quest 3 standalone Android için 60 saniyelik hedef vurma VR arcade oyunu.
-- Unity 6.3 LTS `6000.3.26f1`; C#; URP `17.3.0`.
-- XRI `3.3.2`; OpenXR `1.16.1`; XR Plug-in Management `4.6.1`.
-- Input System `1.20.0`; Test Framework `1.6.0`.
-- Unity CLI `1.0.0-beta.12`; Pipeline `0.8.0-exp.1` (mevcut deneysel CLI paketi).
+- Windows PC VR için 60 saniyelik hedef vurma arcade oyunu; Quest 3, Link/Air Link üzerinden kullanılır.
+- Kullanıcı kararıyla ana hedef Android standalone'dan PC VR'ye değiştirildi (12 Ekim 2026).
+- Unity 6.3 LTS `6000.3.26f1`; C#; URP `17.3.0`; Windows x64 / Mono.
+- XRI `3.3.2`; OpenXR `1.16.1`; XR Plug-in Management `4.6.1`; Input System `1.20.0`.
+- Test Framework `1.6.0`; Unity CLI `1.0.0-beta.12`; Pipeline `0.8.0-exp.1` (mevcut deneysel CLI paketi).
 - PUBLIC repository: https://github.com/berk-celikten/NeonReflexVR — branch `main`.
 
 ## Tamamlananlar
-- Git/GitHub, Unity ignore kuralları ve Unity lisans bildirimleri hazır.
-- Android Build Support, SDK/NDK ve OpenJDK doğrulandı.
-- Android OpenXR, Meta Quest Support, Oculus Touch, IL2CPP/ARM64 hazır.
-- Minimum API 32; Target API Automatic; Input System uyumlu; XR başlangıçta açık.
-- GameScene build listesinde ilk; SampleScene ve mevcut varlıklar korundu.
-- XR Origin / Camera Offset / tek Main Camera + Audio Listener kuruldu.
-- HMD ve sol/sağ kontrolcü için TrackedPoseDriver ve resmî XRI action referansları bağlı.
-- Zemin, üç renkli küp ve basit kontrolcü görselleri; URP Unlit materyaller hazır.
+- Git/GitHub, ignore kuralları ve üçüncü taraf lisans bildirimleri hazır.
+- GameScene build listesinde ilk; SampleScene ve sahne meta dosyaları korundu.
+- XR Origin / Camera Offset / tek kamera + Audio Listener / iki kontrolcü hazır.
+- TrackedPoseDriver ve resmî XRI Head/Left/Right action referansları bağlı.
+- Zemin, üç renkli küp ve kontrolcü görselleri; URP Unlit materyaller hazır.
+- Windows OpenXR Loader, XR başlangıçta başlatma, Oculus Touch ve Single Pass Instanced açık.
+- Bilgisayarda aktif OpenXR runtime: Meta Horizon Link; sahne/oyun kodu değiştirilmedi.
+- GameScene-only Windows Development build başarılı; EXE başlatıldı; OpenXR oturumu FOCUSED.
+- Kullanıcı gözlükte VR görüntü, baş ve iki kontrolcü tracking'inin çalıştığını doğruladı.
 
 ## Mevcut aşama ve sıradaki görev
-- Aşama 2.1–2.3 tamamlandı: ilk VR sahnesi ve tracking yapılandırması hazır.
-- Son işlevsel milestone: `8a66cffd07751e4b8082068eba0e0eef08d3c021`.
-- Sıradaki görev: Aşama 2.4 — ilk APK ve Quest 3 cihaz doğrulaması.
-- Önce Target API/SDK, Developer Mode ve cihaz bağlantısını doğrula; ardından build/test.
-- Henüz silah, lazer, hedef, skor, 60 saniyelik oturum veya locomotion mekaniği yok.
+- Aşama 2.4: PC VR build ve temel gerçek gözlük testi tamamlandı; kalan fiziksel kontroller bekliyor.
+- Son sahne kurulumu commit'i: `8a66cffd07751e4b8082068eba0e0eef08d3c021`; en güncel Git değişikliği için `git log -1`.
+- Sıradaki: göz yüksekliği, recenter, takip kaybından dönüş ve kararlılık/performance testi.
+- Sonrasında Aşama 3: tetik girdisi ve ateş etme. Henüz oyun mekaniği/locomotion yok.
+- EXE: `Builds/Windows/NeonReflexVR.exe`; uygulamayı aynı klasördeki Data/DLL dosyalarıyla birlikte kullan.
 
-## Son milestone doğrulaması ve bilinen sorunlar
-- Script derlemesi başarılı; 7/7 EditMode testi geçti; Console 0 hata / 0 uyarı.
-- Sahne yeniden açıldığında input referansları korundu; eksik script yok.
-- XR Validation: 0 hata, 1 engelleyici olmayan SSAO uyarısı; PC renderer Android'de hariç, Mobile renderer'da SSAO yok.
-- Editor mevcut URP asset'ini otomatik yükseltebilir; ilgisiz asset değişikliklerini diff'te kontrol et.
-- APK build ve fiziksel Quest 3 testi henüz yapılmadı; gerçek kamera/kontrolcü tracking'i doğrulanmadı.
-- Testler: `Assets/Tests/EditMode/GameSceneTests.cs`; kurulum: `Assets/Editor/Setup/GameSceneSetup.cs` (mevcut çıktıları ezmez).
-- İlgili plan: [ROADMAP](ROADMAP.md). Bu belgeyi küçük işlemlerde değil, milestone sonunda güncelle.
+## Doğrulama ve bilinen sorunlar
+- Windows build: 0 hata / 20 uyarı; Windows XR Project Validation: 0 sorun.
+- URP dizi boyutu uyarıları Android→Windows geçişindeki Editor oturumuna ait; Editor yeniden başlatılması öneriliyor.
+- Diğer build uyarıları: Player'da CLI Pipeline runtime kapalı; tam Starter Assets sample klasörü yok. Tracking testi çalıştı.
+- Önceki sahne milestone'unda 7/7 EditMode testi geçti; sahne değiştirilmediği için tekrar koşulmadı.
+- Göz yüksekliği/recenter/takip kaybından dönüş/uzun süreli kararlılık henüz kullanıcı tarafından doğrulanmadı.
+- Eski Android Development APK başarılı oluşturuldu (min API 32, target 36, debug imza); ADB cihaz göstermedi, yüklenmedi.
+- Android ayarları tarihsel olarak korunur; APK/ADB kurulumu artık ana geliştirme hedefi değildir.
+- Builds, `.utmp` ve `Assets/_Recovery` yerelde tutulur, Git'e yüklenmez. Kurtarma yedekleri korunmuştur.
+- [ROADMAP](ROADMAP.md); STATUS yalnızca milestone sonunda güncellenir.
