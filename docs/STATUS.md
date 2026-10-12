@@ -8,38 +8,37 @@
 - PUBLIC https://github.com/berk-celikten/NeonReflexVR — branch `main`.
 
 ## Tamamlananlar
-- Git/ignore/lisanslar hazır; GameScene ilk sahne; SampleScene, meta ve XR/tracking/input bağlantıları korundu.
-- İki elle tek basışlık Raycast/lazer; dinamik Target ilk isabetine +1 puan; üç hedef sınırı.
-- Serbest ağırlıklı dağılım, farklı bölge tercihi, güvenli mesafe/yükseklik/aralık ve retry korunur.
-- Hedef: 0,15 s isabet flash/yenileme; vurulmazsa 5 s; GameOver temizliği.
-- Ready/A başlangıç, 60 s tur, GameOver/final skor ve sağ A restart; geçerli HMD yönüne hizalama.
-- Koyu World Space menü/HUD/sonuç, cyan/turuncu vurgu; tur boyunca sabit ve değer değişiminde güncellenir.
-- Kullanıcı Aşama 4/5 RandomFix dağılım, çift el/skor, 60 s/GameOver/restart testlerini doğruladı.
-- Kullanıcı 6.1 Windows-UI Ready menü, A başlangıç, okunabilir HUD, hedef/skor ve GameOver/A restart'ı doğruladı.
-- 6.2: ArcadeAudioFeedback dört özgün prosedürel Fire/Hit/Start/GameOver clip'i bir kez üretip cache'ler.
-- 48 kHz kısa mono clip'ler; 8 ms giriş/12 ms çıkış fade; tek 2D AudioSource ile merkezli stereo çıkış.
-- Cue ses seviyeleri Inspector'da ayrı ayarlanır; mevcut tek XR kamera AudioListener'ı korunur.
-- Fire yalnız Playing; Hit yalnız başarılı ilk dinamik hedef isabeti; Start yalnız geçerli tur başlangıcı.
-- GameOver cue yalnız durum geçişinde bir kez; yeni tur eski sesleri Stop ile keser, source/clip birikmez.
-- ControllerHitHaptics başarılı ilk dinamik isabette yalnız ateş eden el: genlik 0,12 / süre 0,08 s, ayarlanabilir.
-- Unity XR GetDeviceAtXRNode/TryGetHapticCapabilities/SendHapticImpulse: kurulu XRI 3.3.2 wrapper'ından doğrulandı.
-- Geçersiz/desteksiz haptic cihazı false döndürür; mevcut input action sahipliğine müdahale edilmez.
-- AudioFeedbackSceneSetup iki kez uygulandı: tek AudioSource, tek AudioListener ve iki haptic bileşeni.
-- Yeni paket/MCP/font/dış ses asset'i/müzik/neon/partikül/oyun modu eklenmedi.
-- Eski Windows-RandomFix silindi: yaklaşık 178,3 MiB; Windows-UI'ın 333 dosyası korundu.
+- Git/ignore/lisanslar; GameScene ilk sahne; SampleScene, mevcut meta ve XR/tracking/input referansları korundu.
+- İki elle tek basışlık Raycast/lazer; ilk dinamik Target isabetine +1 puan; en fazla üç hedef.
+- Serbest ağırlıklı bölge dağılımı; farklı bölge tercihi, güvenli mesafe/yükseklik/aralık ve retry.
+- Hedef: 0,15 s beyaz isabet flash/yenileme; vurulmazsa 5 s; GameOver temizliği.
+- Ready/A başlangıç, 60 s tur, GameOver/final skor, sağ A restart; geçerli başlangıç HMD yönü sabitlenir.
+- World Space menü/HUD/sonuç; turda sabit yerleşim, değer değişiminde UI güncelleme.
+- Aşama 4/5 RandomFix dağılım, çift el/skor ve oyun döngüsü kullanıcı tarafından fiziksel olarak doğrulandı.
+- 6.1 Windows-UI menü/HUD okunabilirliği ve A başlangıç/restart kullanıcı tarafından doğrulandı.
+- 6.2 dört cache'li özgün Fire/Hit/Start/GameOver cue: 48 kHz kısa mono clip, fade, ayarlanabilir ses seviyesi.
+- Tek 2D AudioSource/tek XR AudioListener; yalnız geçerli Playing atışı/ilk isabet ve gerçek durum geçişi ses üretir.
+- Başarılı ilk isabette yalnız ateş eden el: haptics genlik 0,12 / süre 0,08 s; desteksiz cihaz sessizce atlanır.
+- Kullanıcı Windows-Audio dört ses, kontrolcü titreşimi, isabet/ıskalama ve restart geri bildirimlerini doğruladı.
+- 20b977c GitHub main'e normal push ile gönderildi ve uzak SHA doğrulandı.
+- 6.3 koyu Unlit zemin; cyan grid, mavi yan raylar ve mor uzak çerçeveler: üç ortak statik mesh/renderer.
+- Dekorasyonda collider/ışık yok; Ignore Raycast; zemin yüksekliği ve XR Origin korunur.
+- HDR turuncu Unlit hedef; mevcut beyaz _BaseColor flash/collider korunur; bağımsız ince cyan/mavi lazerler.
+- Global Bloom: yoğunluk 0,15, eşik 1,3, scatter 0,35, Quarter, dört iterasyon; kamera post-processing açık.
+- NeonArenaSceneSetup idempotent; yeni paket, dış asset, font, animasyon veya oyun mekaniği eklenmedi.
+- Windows-UI silindi: yaklaşık 178,3 MiB; fiziksel olarak doğrulanmış Windows-Audio'ın 333 dosyası korundu.
 
 ## Mevcut aşama ve sıradaki görev
-- 6.2 kod/sahne/test/build tamam; Quest 3 gerçek ses ve titreşim testi bekliyor.
-- Önceki UI commit'i: `df70eea`; güncel commit için `git log -1`.
-- Sıradaki: dört cue ses dengesi, Ready/GameOver sessiz atış, yalnız isabet eden el titreşimi ve restart testi.
-- Yeni EXE: `Builds/Windows-Audio/NeonReflexVR.exe`; Data/DLL dosyalarıyla birlikte kullan.
-- Windows-UI, Windows-Audio fiziksel onayına kadar silinmez.
+- 6.3 uygulama/otomatik test/Windows build tamam; Quest 3 fiziksel görsel ve performans testi bekliyor.
+- Güncel commit için `git log -1`; yeni EXE `Builds/Windows-Neon/NeonReflexVR.exe`.
+- Sıradaki: gözlükte grid/hedef/lazer okunabilirliği, Bloom konforu, HUD, iki el, ses/haptic ve restart kontrolü.
+- Windows-Audio yeni Neon sürümü kullanıcı tarafından doğrulanana kadar korunur.
 
 ## Doğrulama ve bilinen sorunlar
-- 54/54 EditMode testi geçti: cue olay talepleri, PCM/fade/cache, ilk isabet, hand yönlendirme, desteksiz cihaz ve regresyonlar.
-- EditMode ses taleplerini doğrular; gerçek duyulabilir ses/haptic cihaz yanıtı fiziksel test gerektirir.
-- Script derlemesi başarılı; Console: 0 hata / 57 uyarı; Windows-Audio build: 0 hata / 20 uyarı.
-- Bilinen uyarılar: eski Editor URP dizi boyutları; Player'da CLI runtime kapalı; Samples klasörü yok.
-- 6.2 ses seviyesi/kalitesi ve Quest Link titreşim yanıtı kullanıcı tarafından henüz doğrulanmadı.
-- Recenter/takip kaybı/uzun süreli kararlılık ölçümleri ayrıca takip edilir.
+- 60/60 EditMode geçti: 54 oyun/input/ses/haptic regresyonu + altı neon referans/physics/Bloom/flash/spawn testi.
+- Derleme başarılı; Windows-Neon Development build 0 hata / 20 bilinen uyarı.
+- Console 0 hata / 26 uyarı; URP reflection/shadow array boyutu uyarıları Editor oturumunda tekrarlanıyor.
+- Ready/Playing/GameOver masaüstü kamera önizlemeleri incelendi; stereo cihaz testi veya GPU ölçümü değildir.
+- Bloom'un stereo göz konforu ve PC/Link kare hızı henüz ölçülmedi; fiziksel test bekliyor.
+- Recenter, takip kaybı, odak kaybı ve uzun süreli kararlılık ayrıca takip edilir.
 - Builds, Temp/Library, `.utmp`, `Assets/_Recovery` Git'e yüklenmez; [ROADMAP](ROADMAP.md).

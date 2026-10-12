@@ -53,7 +53,7 @@ namespace NeonReflexVR.Tests
             var cameraData = camera.GetComponent<UniversalAdditionalCameraData>();
             Assert.That(cameraData, Is.Not.Null);
             Assert.That(cameraData.allowXRRendering, Is.True);
-            Assert.That(cameraData.renderPostProcessing, Is.False);
+            Assert.That(cameraData.renderPostProcessing, Is.True); // 6.3: controlled XR Bloom; tracking remains unchanged.
             var listener = Components<AudioListener>().Single();
             Assert.That(listener.gameObject, Is.EqualTo(camera.gameObject));
             Assert.That(listener.enabled, Is.True);

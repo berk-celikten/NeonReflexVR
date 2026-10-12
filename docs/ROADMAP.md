@@ -57,8 +57,10 @@ Ana hedef Windows PC VR / Quest Link-Air Link'tir. Android APK/ADB dağıtımı 
 - [x] 6.1 — Kullanıcı Windows-UI menü/HUD okunabilirliği, hedef/skor, GameOver ve A akışını doğruladı.
 - [x] 6.2 — Özgün cache'li Fire/Hit/Start/GameOver sesleri ve ilk dinamik isabette doğru el haptics ekle.
 - [x] İdempotent sahne entegrasyonu, 54 EditMode testi ve Windows-Audio Development build'ini doğrula.
-- [ ] 6.2 — Quest 3 + Link ses dengesi, doğru el titreşimi ve restart'ı kullanıcıyla doğrula.
-- [ ] Neon görsel stil ve ortam sunumunu geliştir.
+- [x] 6.2 — Kullanıcı Quest 3 + Link dört ses, doğru el titreşimi, isabet/ıskalama ve restart'ı doğruladı.
+- [x] 6.3 — Koyu arena, ortak neon grid/çerçeve meshleri, HDR turuncu hedef ve ince çift el lazerlerini ekle.
+- [x] Kontrollü URP Bloom, altı görsel/physics testi, 60/60 regresyon ve Windows-Neon build doğrulandı.
+- [ ] 6.3 — Quest 3 + Link görsel konfor/okunabilirlik, Bloom, performans ve oynanış fiziksel testi.
 - [ ] Okunabilirlik, ses dengesi, kullanıcı konforu ve sınırları doğrula.
 - [ ] Odağı kaybetme, uygulamaya geri dönme ve yeniden oynama akışlarını test et.
 
