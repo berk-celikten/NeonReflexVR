@@ -1,6 +1,6 @@
 {
   "name": "NeonReflexVR.EditModeTests",
-  "references": ["Unity.XR.CoreUtils", "Unity.XR.Interaction.Toolkit", "Unity.InputSystem", "Unity.RenderPipelines.Universal.Runtime"],
+  "references": ["NeonReflexVR.Runtime", "Unity.XR.CoreUtils", "Unity.XR.Interaction.Toolkit", "Unity.InputSystem", "Unity.InputSystem.TestFramework", "Unity.RenderPipelines.Universal.Runtime"],
   "includePlatforms": ["Editor"],
   "optionalUnityReferences": ["TestAssemblies"],
   "autoReferenced": false

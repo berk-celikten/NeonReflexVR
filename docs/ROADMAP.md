@@ -25,10 +25,11 @@ Ana hedef Windows PC VR / Quest Link-Air Link'tir. Android APK/ADB dağıtımı 
 - [ ] Uygulama odağı ve başlangıç performansını cihazda kontrol et.
 
 ## 3. Kontrolcü girdisi ve ateş etme
-- [ ] Kullanılacak el/kontrolcü ve tetik input davranışını belirle.
-- [ ] Basit silah/görsel ve tek atış mekanizmasını oluştur.
-- [ ] İsabet sorgusu, atış geri bildirimi ve atış aralığını uygula.
-- [ ] Input ve atış davranışını test et; Quest 3 / Link üzerinde doğrula.
+- [x] Sağ kontrolcü ve resmî XRI Right Interaction/Activate trigger action bağlantısını kur.
+- [x] Mevcut kontrolcü görselini koru; her trigger basışında tek Raycast atışı uygula.
+- [x] Üç mevcut kübe kısa isabet geri bildirimi ve düşük maliyetli atış lazeri ekle.
+- [x] Input, Raycast, engel, materyal koruma ve sahne referanslarını EditMode ile doğrula (14/14).
+- [ ] Quest 3 / Link üzerinde trigger tek atışını, lazeri, üç kübün geri bildirimini ve tracking regresyonunu fiziksel olarak doğrula.
 
 ## 4. Hedefler ve isabet sistemi
 - [ ] Hedef prefabı, görünüm ve güvenli konumlandırma alanını oluştur.

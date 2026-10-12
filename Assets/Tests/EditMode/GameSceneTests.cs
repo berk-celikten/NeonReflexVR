@@ -77,7 +77,7 @@ namespace NeonReflexVR.Tests
             {
                 var origin = Components<XROrigin>().Single();
                 Assert.That(driver.transform.parent, Is.EqualTo(origin.CameraFloorOffsetObject.transform));
-                Assert.That(driver.GetComponentsInChildren<Renderer>().Length, Is.EqualTo(1));
+                Assert.That(driver.GetComponentsInChildren<Renderer>().Length, Is.EqualTo(objectName == "Right Controller" ? 2 : 1));
                 Assert.That(driver.GetComponentsInChildren<Collider>(), Is.Empty);
             }
         }
@@ -105,7 +105,7 @@ namespace NeonReflexVR.Tests
             Assert.That(Components<TrackedPoseDriver>().Length, Is.EqualTo(3));
             Assert.That(Components<CharacterController>(), Is.Empty);
             Assert.That(Components<Rigidbody>(), Is.Empty);
-            Assert.That(Components<LineRenderer>(), Is.Empty);
+            Assert.That(Components<LineRenderer>().Length, Is.EqualTo(1));
             foreach (var component in Components<MonoBehaviour>())
             {
                 Assert.That(component.GetType().FullName, Does.Not.Contain("Locomotion"));
