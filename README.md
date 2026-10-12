@@ -30,3 +30,7 @@ Mevcut Editor.log içinde C# derleme hatası görülmemiş ve son script derleme
 `Assets`, varlıkların `.meta` dosyaları, `Packages/manifest.json`, `Packages/packages-lock.json` ve `ProjectSettings` sürüm kontrolünde korunmalıdır. `Library`, `Temp`, `Obj`, `Logs`, `Builds`, kullanıcı ayarları ve üretilen IDE dosyaları `.gitignore` ile hariç tutulur.
 
 GitHub bağlantısı ve ilk push sonraki aşamada birlikte yapılacaktır. Geliştirme kuralları için `AGENTS.md` dosyasını okuyun.
+
+## Üçüncü taraf lisans bildirimleri
+
+Unity URP şablonundan gelen içeriklerin telif bildirimleri ve Unity Companion License'ın tam metni [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) dosyasındadır. Bu lisans ilgili Unity içeriği ve türevleri için geçerlidir; NeonReflexVR için geliştireceğimiz özgün oyun koduna ve projenin tamamına uygulanmaz. Özgün içerik için henüz proje genelinde bir açık kaynak lisansı seçilmemiştir. Paketler kendi lisans koşullarına tabidir.
