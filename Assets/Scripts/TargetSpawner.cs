@@ -12,6 +12,9 @@ namespace NeonReflexVR
         [SerializeField] Transform view;
         readonly Target[] targets = new Target[3];
         readonly float[] nextAttempt = new float[3];
+        readonly int[] targetRegions = new int[3];
+        readonly Vector3[] previousPositions = new Vector3[3];
+        readonly float[] recentUses = new float[3];
         Vector3 anchor;
         Vector3 forward;
         Vector3 right;
@@ -76,7 +79,11 @@ namespace NeonReflexVR
             if (forward.sqrMagnitude < 0.5f) return;
             right = Vector3.Cross(Vector3.up, forward);
             initialized = true;
-            for (var i = 0; i < targets.Length; i++) nextAttempt[i] = now;
+            for (var i = 0; i < targets.Length; i++)
+            {
+                nextAttempt[i] = now;
+                targetRegions[i] = -1;
+            }
             Tick(now);
         }
 
@@ -85,22 +92,26 @@ namespace NeonReflexVR
             if (!initialized) return;
             for (var i = 0; i < targets.Length; i++)
             {
-                var previous = Vector3.zero;
+
                 var replacing = targets[i] != null && now >= targets[i].ExpiresAt;
                 if (replacing)
                 {
-                    previous = targets[i].transform.position;
+                    previousPositions[i] = targets[i].transform.position;
                     Remove(targets[i]);
                     targets[i] = null;
                     nextAttempt[i] = now;
                 }
                 if (targets[i] != null || now < nextAttempt[i]) continue;
-                if (TryPosition(i, previous, replacing, out var position))
+                if (TryNewPosition(previousPositions[i], targetRegions[i], out var position, out var region))
                 {
                     var target = Instantiate(targetPrefab, position, Quaternion.identity, transform);
                     target.Initialize(now);
                     target.gameObject.SetActive(true);
                     targets[i] = target;
+                    targetRegions[i] = region;
+                    previousPositions[i] = position;
+                    for (var r = 0; r < recentUses.Length; r++) recentUses[r] *= 0.8f;
+                    recentUses[region] += 1f;
                 }
                 else
                 {
@@ -114,6 +125,46 @@ namespace NeonReflexVR
             }
         }
 
+        float RegionWeight(int region)
+        {
+            var occupied = 0;
+            for (var i = 0; i < targets.Length; i++)
+                if (targets[i] != null && targetRegions[i] == region) occupied++;
+            return 1f / (1f + 2f * occupied + recentUses[region]);
+        }
+
+        int PickRegion(int mask)
+        {
+            var total = 0f;
+            for (var region = 0; region < 3; region++)
+                if ((mask & (1 << region)) != 0) total += RegionWeight(region);
+            var choice = Random.value * total;
+            var last = 0;
+            for (var region = 0; region < 3; region++)
+            {
+                if ((mask & (1 << region)) == 0) continue;
+                last = region;
+                choice -= RegionWeight(region);
+                if (choice <= 0f) return region;
+            }
+            return last;
+        }
+
+        bool TryNewPosition(Vector3 previous, int previousRegion, out Vector3 position, out int region)
+        {
+            var mask = previousRegion >= 0 ? 7 & ~(1 << previousRegion) : 7;
+            for (var pass = 0; pass < 3; pass++)
+            {
+                // Prefer a different region; allow the previous region if the alternatives are unsafe.
+                if (mask == 0) mask = 1 << previousRegion;
+                region = PickRegion(mask);
+                mask &= ~(1 << region);
+                if (TryPosition(region, previous, previousRegion >= 0, out position)) return true;
+            }
+            position = default;
+            region = -1;
+            return false;
+        }
         bool TryPosition(int region, Vector3 previous, bool replacing, out Vector3 position)
         {
             for (var attempt = 0; attempt < 91; attempt++)
@@ -157,6 +208,9 @@ namespace NeonReflexVR
             {
                 if (targets[i] != null) Remove(targets[i]);
                 targets[i] = null;
+                targetRegions[i] = -1;
+                previousPositions[i] = default;
+                recentUses[i] = 0f;
             }
             initialized = false;
             warned = false;

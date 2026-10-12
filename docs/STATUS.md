@@ -17,8 +17,9 @@
 - Sağ A ile GameOver'da restart: mevcut XRI Right Locomotion/Jump; skor 0/süre 60/üç yeni hedef.
 - Sade World Space skor/süre/GameOver/Final Score/restart UI; tur boyunca sabit.
 - Kullanıcı Aşama 5 temel oyun döngüsünü çalışır buldu; hedeflerin sola yığılması gözlemlendi.
-- Spawn fix: sabit üç slot, her sol/orta/sağ bölgede bir hedef; yeniden üretim aynı slot bölgesinde.
-- Açı sınırları: sol -25/-8,33°, orta -8,33/+8,33°, sağ +8,33/+25°.
+- RandomFix: üç kapasite slotu hiçbir bölgeye bağlı değil; güvenli alanın tamamında rastgele hedefler.
+- Sol/orta/sağ seçim ağırlığı: 1/(1 + 2*bölge doluluğu + yakın kullanım); yakın kullanım her spawn'da 0,8 ile azalır.
+- Yeni hedef önce farklı bölgelere yerleştirilir; alternatifler güvenli değilse önceki bölge denenir.
 - Mesafe 2,5–3,5 m; gözden -0,5/+0,1 m yükseklik; hedefler arası en az 0,65 m.
 - Collider/görüş hattı kontrolleri korunur; 64 rastgele + 27 sınırlı fallback adayı; engelde 0,5 s retry.
 - HMD isTracked, konum+rotasyon ve geçerli merkez göz pose'u beklenir; taze input tracking-space'ten dünyaya çevrilir.
@@ -27,17 +28,17 @@
 - Yeni paket/oyun modu/ses/partikül/pooling eklenmedi; atış, skor, süre, GameOver ve UI korundu.
 
 ## Mevcut aşama ve sıradaki görev
-- Hedef dağılımı düzeltmesi kod/test/build olarak hazır; Quest 3 fiziksel onayı bekliyor.
-- Önceki oyun döngüsü commit'i: `fc9b9c2`; güncel commit için `git log -1`.
-- Sıradaki: farklı başlangıç yönleriyle sol/orta/sağ birer hedef, kendi bölgelerinde yenileme ve sabit alan testi.
+- Serbest/ağırlıklı hedef dağılımı kod/test/build olarak hazır; Quest 3 fiziksel onayı bekliyor.
+- Önceki sabit bölge düzeltmesi commit'i: `d5415d7`; güncel commit için `git log -1`.
+- Sıradaki: hedeflerin bölge değiştirmesi, uzun vadeli denge, üç hedef sınırı ve sabit alanı cihazda test et.
 - Skor, 60 s/GameOver/A restart, iki el ve HUD regresyonunu cihazda kontrol et.
-- Yeni EXE: `Builds/Windows-SpawnFix/NeonReflexVR.exe`; Data/DLL dosyalarıyla kullan.
-- `Builds/Windows-GameLoop` korunur; SpawnFix fiziksel onayından sonra eski build temizlenebilir.
+- Yeni EXE: `Builds/Windows-RandomFix/NeonReflexVR.exe`; Data/DLL dosyalarıyla kullan.
+- `Builds/Windows-SpawnFix` ve Windows-GameLoop korundu; RandomFix fiziksel onayından önce eski build silinmez.
 - Sonrasında Aşama 6: VR sunumu/menü ve görsel-ses kullanılabilirlik.
 
 ## Doğrulama ve bilinen sorunlar
-- 42/42 EditMode testi geçti; bölge dağılımı/yenileme, engelli retry, HMD hazır olma/hizalama ve önceki sistemler.
-- Script derlemesi başarılı; Console: 0 hata / 26 uyarı. Windows SpawnFix build: 0 hata / 20 uyarı.
+- 43/43 EditMode testi geçti: 40 başlangıç seed'i, üç seed'de 300'er dengeli yenileme, serbest slotlar ve regresyonlar.
+- Script derlemesi başarılı; Console: 0 hata / 20 uyarı. Windows RandomFix build: 0 hata / 8 uyarı.
 - Uyarılar önceki Android→Windows oturumunun URP dizi boyutları; Editor yeniden başlatılması önerilir.
 - Diğer build uyarıları: Player'da CLI Pipeline runtime kapalı; tam Starter Assets sample klasörü yok.
 - Yeni dağılım/hizalama, kapsamlı UI okunabilirliği ve takip/recenter/kararlılık ölçümleri fiziksel test bekliyor.

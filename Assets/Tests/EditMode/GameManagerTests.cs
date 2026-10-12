@@ -270,9 +270,7 @@ namespace NeonReflexVR.Tests
             var facing = Quaternion.Euler(0f, 70f, 0f) * Vector3.forward;
             var regions = Targets().Select(target => Vector3.SignedAngle(facing,
                 Vector3.ProjectOnPlane(target.transform.position - eye, Vector3.up), Vector3.up)).OrderBy(angle => angle).ToArray();
-            Assert.That(regions[0], Is.InRange(-25.01f, -8.32f));
-            Assert.That(regions[1], Is.InRange(-8.35f, 8.35f));
-            Assert.That(regions[2], Is.InRange(8.32f, 25.01f));
+            foreach (var angle in regions) Assert.That(angle, Is.InRange(-25.01f, 25.01f));
             Assert.That(Vector3.Angle(label.canvas.transform.forward, facing), Is.LessThan(0.01f));
             var positions = Targets().Select(target => target.transform.position).ToArray();
             Set(hmd.centerEyeRotation, Quaternion.Euler(0f, -60f, 0f));

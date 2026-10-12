@@ -59,7 +59,6 @@ namespace NeonReflexVR.Tests
             var targets = Targets();
             Assert.That(spawner.ActiveCount, Is.EqualTo(3));
             Assert.That(targets.Length, Is.EqualTo(3));
-            Assert.That(targets.GroupBy(target => Region(target.transform.position)).OrderBy(group => group.Key).Select(group => group.Count()), Is.EqualTo(new[] { 1, 1, 1 }), "Exactly one target per left/center/right region.");
             for (var i = 0; i < targets.Length; i++)
             {
                 var offset = targets[i].transform.position - eye;
@@ -121,7 +120,7 @@ namespace NeonReflexVR.Tests
             var replacement = Targets().Except(untouched).Single();
             Assert.That(Vector3.Distance(replacement.transform.position, previous), Is.GreaterThanOrEqualTo(0.649f));
             Assert.That(replacement.IsHit, Is.False);
-            Assert.That(Region(replacement.transform.position), Is.EqualTo(previousRegion));
+            Assert.That(Region(replacement.transform.position), Is.Not.EqualTo(previousRegion));
             AssertSafe();
         }
 
@@ -161,39 +160,59 @@ namespace NeonReflexVR.Tests
         [TestCase(1)]
         [TestCase(17)]
         [TestCase(1007)]
-        public void EveryRegionStaysOccupiedAcrossRandomSeedsAndRepeatedHits(int seed)
+        public void FreeRegionsStayBalancedAcrossRandomSeedsAndRepeatedHits(int seed)
         {
             spawner.Stop();
             Random.InitState(seed);
             spawner.Initialize(eye, Vector3.forward, 0f);
             AssertSafe();
-            for (var round = 0; round < 20; round++)
+            var usage = new int[3];
+            for (var round = 0; round < 100; round++)
             {
                 var now = round * 2f + 1f;
                 foreach (var target in Targets()) Assert.That(target.TryHit(now), Is.True);
                 spawner.Tick(now + 0.16f);
+                foreach (var target in Targets()) usage[Region(target.transform.position)]++;
                 AssertSafe();
             }
+            foreach (var count in usage) Assert.That(count, Is.InRange(60, 135), "Each region should receive a balanced share of 300 spawns.");
         }
 
         [Test]
-        public void BlockedLeftRegionRetriesWithoutSpawningInOtherRegions()
+        public void InitialSlotsCanUseEveryRegionAndNeedNotOccupyOneEach()
+        {
+            var firstSlotRegions = new System.Collections.Generic.HashSet<int>();
+            var duplicateRegionSeen = false;
+            for (var seed = 0; seed < 40; seed++)
+            {
+                spawner.Stop();
+                Random.InitState(seed);
+                spawner.Initialize(eye, Vector3.forward, 0f);
+                AssertSafe();
+                firstSlotRegions.Add(Region(Targets()[0].transform.position));
+                if (Targets().Select(target => Region(target.transform.position)).Distinct().Count() < 3) duplicateRegionSeen = true;
+            }
+            Assert.That(firstSlotRegions, Is.EquivalentTo(new[] { 0, 1, 2 }));
+            Assert.That(duplicateRegionSeen, Is.True, "Regions are weighted preferences, not fixed slots.");
+        }
+        [Test]
+        public void FullyBlockedFieldRetriesWithoutUnsafeSpawns()
         {
             spawner.Stop();
             var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
             try
             {
-                wall.transform.position = eye + new Vector3(-2.7f, -0.2f, 2f);
-                wall.transform.localScale = new Vector3(5f, 3f, 0.1f);
+                wall.transform.position = eye + new Vector3(0f, -0.2f, 2f);
+                wall.transform.localScale = new Vector3(6f, 3f, 0.1f);
                 Physics.SyncTransforms();
                 LogAssert.Expect(LogType.Warning, "TargetSpawner: safe region blocked; retrying without adding unsafe targets.");
                 spawner.Initialize(eye, Vector3.forward, 0f);
-                Assert.That(spawner.ActiveCount, Is.EqualTo(2));
+                Assert.That(spawner.ActiveCount, Is.Zero);
                 Assert.That(Targets().Any(target => Region(target.transform.position) == 0), Is.False);
                 Object.DestroyImmediate(wall);
                 Physics.SyncTransforms();
                 spawner.Tick(0.49f);
-                Assert.That(spawner.ActiveCount, Is.EqualTo(2));
+                Assert.That(spawner.ActiveCount, Is.Zero);
                 spawner.Tick(0.51f);
                 AssertSafe();
             }
