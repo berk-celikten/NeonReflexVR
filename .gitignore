@@ -1,0 +1,87 @@
+# Unity generated directories (root of project)
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Bb]uild/
+/[Bb]uilds/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+/.vs/
+/.vscode/
+/.idea/
+/.gradle/
+
+# Generated IDE and debugger files
+*.csproj
+*.unityproj
+*.sln
+*.slnx
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.log
+*.tmp
+*.bak
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Unity generated caches and crash output
+/[Aa]ssets/AssetStoreTools*
+/[Aa]ssets/AddressableAssetsData/*/*.bin*
+/[Aa]ssets/StreamingAssets/aa/
+/sysinfo.txt
+/crash-report*
+
+# OS metadata
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# Keep Assets, Packages, ProjectSettings and source asset .meta files.
+
+# Local secrets and Android signing material
+.env
+.env.*
+.env.meta
+.env.*.meta
+*.pem
+*.pem.meta
+*.key
+*.key.meta
+*.p12
+*.p12.meta
+*.pfx
+*.pfx.meta
+*.jks
+*.jks.meta
+*.keystore
+*.keystore.meta
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+credentials.json
+credentials.json.meta
+service-account*.json
+service-account*.json.meta
+local.properties
+local.properties.meta
+keystore.properties
+keystore.properties.meta
+
+# Android build artifacts
+*.apk
+*.apk.meta
+*.aab
+*.aab.meta
