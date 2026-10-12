@@ -10,35 +10,36 @@
 
 ## Tamamlananlar
 - Git/GitHub, ignore kuralları ve üçüncü taraf lisans bildirimleri hazır.
-- GameScene build listesinde ilk; SampleScene, XR Origin, kamera, tracking/input ve mevcut meta dosyaları korundu.
-- İki elde tek basışlık Raycast ve ayrı lazer; mevcut üç test kübü ve flash davranışı korunur.
-- Kullanıcı Aşama 3 çift el testinin 7 kontrolünü ve Aşama 4 hedef oynanışını Quest 3 + Link ile doğruladı.
-- Sphere Target prefabı: 0,3 m, collider, Unlit; üç hedef, ilk isabet sonrası 0,15 s flash ve yenileme.
-- Vurulmayan hedef 5 s'de yenilenir; başlangıç bakışına sabit güvenli bölge, 2,5–3,5 m mesafe.
-- Üç slot; engel/çakışma kontrolü; pooling/coroutine/event birikimi yok.
-- Aşama 5: GameManager Ready → Playing → GameOver; ilk LateUpdate'te otomatik oyun başlangıcı.
-- Playing: 60 s (Time.time), üç hedef ve yalnızca dinamik Target ilk isabeti için +1 puan.
-- GameOver: süre 0, son skor sabit; spawner Stop ile tüm hedefler temizlenir; skor artmaz.
-- Sağ A: mevcut resmî XRI Right Locomotion/Jump action referansı; yalnız GameOver'da yeni basışla restart.
-- Restart sahne yüklemez; skor 0/süre 60/üç yeni hedef; iki shooter aynı manager'a bağlı.
-- Sade World Space Canvas/Text: Score, Time, Game Over, Final Score, Press A to Restart.
-- HUD başlangıç bakışının 2 m önünde ve gözden 0,55 m yukarıda; oturum boyunca sabit.
-- Input asset, Target.cs, prefab, XR/tracking ve paketler değiştirilmedi; yeni paket/ses/neon/partikül yok.
+- GameScene ilk build sahnesi; SampleScene, XR Origin, kamera, tracking/input ve meta dosyaları korundu.
+- İki elde tek basışlık Raycast ve ayrı lazer; kullanıcı çift el ve Aşama 4 hedef testlerini doğruladı.
+- Sphere Target: 0,3 m, collider, Unlit; ilk isabet sonrası 0,15 s flash/yenileme, vurulmazsa 5 s yenileme.
+- Ready/Playing/GameOver; 60 s tur, dinamik hedef ilk isabetine +1 puan; oyun sonunda hedef temizliği.
+- Sağ A ile GameOver'da restart: mevcut XRI Right Locomotion/Jump; skor 0/süre 60/üç yeni hedef.
+- Sade World Space skor/süre/GameOver/Final Score/restart UI; tur boyunca sabit.
+- Kullanıcı Aşama 5 temel oyun döngüsünü çalışır buldu; hedeflerin sola yığılması gözlemlendi.
+- Spawn fix: sabit üç slot, her sol/orta/sağ bölgede bir hedef; yeniden üretim aynı slot bölgesinde.
+- Açı sınırları: sol -25/-8,33°, orta -8,33/+8,33°, sağ +8,33/+25°.
+- Mesafe 2,5–3,5 m; gözden -0,5/+0,1 m yükseklik; hedefler arası en az 0,65 m.
+- Collider/görüş hattı kontrolleri korunur; 64 rastgele + 27 sınırlı fallback adayı; engelde 0,5 s retry.
+- HMD isTracked, konum+rotasyon ve geçerli merkez göz pose'u beklenir; taze input tracking-space'ten dünyaya çevrilir.
+- İlk tur ve restart valid HMD yönüne hizalanır; süre beklerken başlamaz, alan baş dönüşünü takip etmez.
+- Eski üç renkli küp yalnız GameScene'den kaldırıldı; materyal/prefab ve diğer kaynak dosyaları silinmedi.
+- Yeni paket/oyun modu/ses/partikül/pooling eklenmedi; atış, skor, süre, GameOver ve UI korundu.
 
 ## Mevcut aşama ve sıradaki görev
-- Aşama 5 uygulaması ve otomatik doğrulamalar tamam; fiziksel tam tur/restart/UI testi bekliyor.
-- Önceki hedef sistemi commit'i: `86c3b67`; güncel commit için `git log -1`.
-- Sıradaki: 60 s tur, iki el skor, küplerin puan kazandırmaması, GameOver temizliği ve A ile restart testi.
-- UI okunabilirliğini ve tekrar turlarda hedef birikmediğini kontrol et; onaysız fiziksel testi tamamlama.
+- Hedef dağılımı düzeltmesi kod/test/build olarak hazır; Quest 3 fiziksel onayı bekliyor.
+- Önceki oyun döngüsü commit'i: `fc9b9c2`; güncel commit için `git log -1`.
+- Sıradaki: farklı başlangıç yönleriyle sol/orta/sağ birer hedef, kendi bölgelerinde yenileme ve sabit alan testi.
+- Skor, 60 s/GameOver/A restart, iki el ve HUD regresyonunu cihazda kontrol et.
+- Yeni EXE: `Builds/Windows-SpawnFix/NeonReflexVR.exe`; Data/DLL dosyalarıyla kullan.
+- `Builds/Windows-GameLoop` korunur; SpawnFix fiziksel onayından sonra eski build temizlenebilir.
 - Sonrasında Aşama 6: VR sunumu/menü ve görsel-ses kullanılabilirlik.
-- Test EXE: `Builds/Windows-GameLoop/NeonReflexVR.exe`; yanındaki Data/DLL dosyalarıyla kullan.
 
 ## Doğrulama ve bilinen sorunlar
-- 36/36 EditMode testi geçti (önceki 25 + 11 oyun döngüsü/skor/restart/UI testi).
-- Script derlemesi başarılı; Console son kontrol: 0 hata / 26 uyarı. Windows build: 0 hata / 20 uyarı.
+- 42/42 EditMode testi geçti; bölge dağılımı/yenileme, engelli retry, HMD hazır olma/hizalama ve önceki sistemler.
+- Script derlemesi başarılı; Console: 0 hata / 26 uyarı. Windows SpawnFix build: 0 hata / 20 uyarı.
 - Uyarılar önceki Android→Windows oturumunun URP dizi boyutları; Editor yeniden başlatılması önerilir.
 - Diğer build uyarıları: Player'da CLI Pipeline runtime kapalı; tam Starter Assets sample klasörü yok.
-- Aşama 5 gerçek Quest 3 tur/restart/HUD okunabilirliği henüz kullanıcı tarafından doğrulanmadı.
-- Göz yüksekliği/recenter/takip kaybından dönüş/uzun süreli kararlılık ölçümleri ayrıca takip edilir.
+- Yeni dağılım/hizalama, kapsamlı UI okunabilirliği ve takip/recenter/kararlılık ölçümleri fiziksel test bekliyor.
 - Android artık ana hedef değil. Builds, `.utmp`, `Assets/_Recovery` Git'e yüklenmez.
 - [ROADMAP](ROADMAP.md); STATUS yalnızca milestone sonunda güncellenir.

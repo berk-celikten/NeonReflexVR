@@ -252,6 +252,57 @@ namespace NeonReflexVR.Tests
         }
 
         [Test]
+        public void RoundWaitsForValidHmdPoseAndUsesFreshControlsInsteadOfStaleView()
+        {
+            spawner.View.gameObject.AddComponent<UnityEngine.InputSystem.XR.TrackedPoseDriver>();
+            var hmd = InputSystem.AddDevice<UnityEngine.InputSystem.XR.XRHMD>();
+            Assert.That(manager.StartGame(0f), Is.False);
+            Assert.That(manager.State, Is.EqualTo(GameState.Ready));
+            Assert.That(spawner.ActiveCount, Is.Zero);
+            Assert.That(manager.RemainingSeconds, Is.EqualTo(60f));
+            Set(hmd.isTracked, 1f);
+            Set(hmd.trackingState, 2);
+            Set(hmd.centerEyePosition, eye);
+            Set(hmd.centerEyeRotation, Quaternion.Euler(0f, 70f, 0f));
+            Assert.That(manager.StartGame(5f), Is.False, "Both position and rotation must be tracked.");
+            Set(hmd.trackingState, 3);
+            Assert.That(manager.StartGame(10f), Is.True);
+            var facing = Quaternion.Euler(0f, 70f, 0f) * Vector3.forward;
+            var regions = Targets().Select(target => Vector3.SignedAngle(facing,
+                Vector3.ProjectOnPlane(target.transform.position - eye, Vector3.up), Vector3.up)).OrderBy(angle => angle).ToArray();
+            Assert.That(regions[0], Is.InRange(-25.01f, -8.32f));
+            Assert.That(regions[1], Is.InRange(-8.35f, 8.35f));
+            Assert.That(regions[2], Is.InRange(8.32f, 25.01f));
+            Assert.That(Vector3.Angle(label.canvas.transform.forward, facing), Is.LessThan(0.01f));
+            var positions = Targets().Select(target => target.transform.position).ToArray();
+            Set(hmd.centerEyeRotation, Quaternion.Euler(0f, -60f, 0f));
+            manager.Tick(11f);
+            Assert.That(Targets().Select(target => target.transform.position), Is.EqualTo(positions));
+            Assert.That(manager.RemainingSeconds, Is.EqualTo(59f));
+        }
+
+        [Test]
+        public void RestartWaitsForTrackingWithoutDiscardingFinalScore()
+        {
+            manager.StartGame(0f);
+            manager.TryHit(Targets()[0], 1f);
+            manager.Tick(60f);
+            spawner.View.gameObject.AddComponent<UnityEngine.InputSystem.XR.TrackedPoseDriver>();
+            var hmd = InputSystem.AddDevice<UnityEngine.InputSystem.XR.XRHMD>();
+            Assert.That(manager.Restart(61f), Is.False);
+            Assert.That(manager.State, Is.EqualTo(GameState.GameOver));
+            Assert.That(manager.Score, Is.EqualTo(1));
+            Assert.That(spawner.ActiveCount, Is.Zero);
+            Set(hmd.centerEyePosition, eye);
+            Set(hmd.centerEyeRotation, Quaternion.Euler(0f, 90f, 0f));
+            Set(hmd.trackingState, 3);
+            Set(hmd.isTracked, 1f);
+            Assert.That(manager.Restart(62f), Is.True);
+            Assert.That(manager.Score, Is.Zero);
+            Assert.That(manager.RemainingSeconds, Is.EqualTo(60f));
+            Assert.That(spawner.ActiveCount, Is.EqualTo(3));
+        }
+        [Test]
         public void SavedSceneBindsManagerBothShootersWorldHudAndOfficialRightAAction()
         {
             const string path = "Assets/Scenes/GameScene.unity";

@@ -216,7 +216,7 @@ namespace NeonReflexVR.Tests
         }
         [TestCase("Left")]
         [TestCase("Right")]
-        public void SavedSceneUsesOfficialHandTriggerAndOnlyThreeTestTargets(string hand)
+        public void SavedSceneUsesOfficialHandTriggerWithoutOldTestCubes(string hand)
         {
             const string path = "Assets/Scenes/GameScene.unity";
             var scene = SceneManager.GetSceneByPath(path);
@@ -239,7 +239,7 @@ namespace NeonReflexVR.Tests
                 Assert.That(saved.Laser.useWorldSpace, Is.True);
                 Assert.That(saved.Laser.transform.parent, Is.EqualTo(saved.transform));
                 Assert.That(roots.SelectMany(root => root.GetComponentsInChildren<TestTargetFeedback>(true))
-                    .Select(target => target.name), Is.EquivalentTo(new[] { "Red Cube", "Green Cube", "Blue Cube" }));
+                    .Select(target => target.name), Is.Empty);
                 Assert.That(scene.isDirty, Is.False);
             }
             finally { if (opened) EditorSceneManager.CloseScene(scene, true); }

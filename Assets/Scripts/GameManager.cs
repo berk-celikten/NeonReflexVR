@@ -34,19 +34,21 @@ namespace NeonReflexVR
         public bool StartGame(float now)
         {
             if (State != GameState.Ready) return false;
-            BeginRound(now);
-            return true;
+            return BeginRound(now);
         }
 
         public bool Restart(float now)
         {
             if (State != GameState.GameOver) return false;
-            BeginRound(now);
-            return true;
+            return BeginRound(now);
         }
 
-        void BeginRound(float now)
+        bool BeginRound(float now)
         {
+            var position = Vector3.zero;
+            var direction = Vector3.forward;
+            // Keep Ready/GameOver and the final score intact until a valid HMD pose is available.
+            if (spawner != null && !spawner.TryGetStartPose(out position, out direction)) return false;
             Score = 0;
             RemainingSeconds = 60f;
             deadline = now + 60f;
@@ -54,23 +56,17 @@ namespace NeonReflexVR
             if (spawner != null)
             {
                 spawner.Stop();
-                var view = spawner.View;
-                if (view != null)
+                spawner.Initialize(position, direction, now);
+                if (statusText != null)
                 {
-                    spawner.Initialize(view.position, view.forward, now);
-                    if (statusText != null)
-                    {
-                        var forward = Vector3.ProjectOnPlane(view.forward, Vector3.up).normalized;
-                        if (forward.sqrMagnitude < 0.5f) forward = Vector3.forward;
-                        var canvas = statusText.canvas.transform;
-                        canvas.position = view.position + forward * 2f + Vector3.up * 0.55f;
-                        canvas.rotation = Quaternion.LookRotation(forward, Vector3.up);
-                    }
+                    var canvas = statusText.canvas.transform;
+                    canvas.position = position + direction * 2f + Vector3.up * 0.55f;
+                    canvas.rotation = Quaternion.LookRotation(direction, Vector3.up);
                 }
             }
             RefreshDisplay();
+            return true;
         }
-
         public void Tick(float now)
         {
             if (State != GameState.Playing) return;

@@ -115,12 +115,12 @@ namespace NeonReflexVR.Tests
         }
 
         [Test]
-        public void TestEnvironmentHasDistinctCubesAndValidLowCostMaterials()
+        public void TestEnvironmentHasNoOldCubesAndValidLowCostMaterials()
         {
             var renderers = Components<Renderer>();
             var cubes = renderers.Where(renderer => renderer.name.EndsWith(" Cube", StringComparison.Ordinal)).ToArray();
-            Assert.That(cubes.Length, Is.EqualTo(3));
-            Assert.That(cubes.Select(cube => cube.sharedMaterial.GetColor("_BaseColor")).Distinct().Count(), Is.EqualTo(3));
+            Assert.That(cubes, Is.Empty);
+
             Assert.That(renderers.Count(renderer => renderer.name == "Floor"), Is.EqualTo(1));
             foreach (var renderer in renderers)
             {

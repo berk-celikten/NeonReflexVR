@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.TestTools;
 
 namespace NeonReflexVR.Tests
 {
@@ -51,11 +52,14 @@ namespace NeonReflexVR.Tests
         Target[] Targets() => host.GetComponentsInChildren<Target>();
         void InvokeDisable() => typeof(TargetSpawner).GetMethod("OnDisable", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).Invoke(spawner, null);
 
+        int Region(Vector3 position) => Mathf.Clamp(Mathf.FloorToInt((Vector3.SignedAngle(Vector3.forward, Vector3.ProjectOnPlane(position - eye, Vector3.up), Vector3.up) + 25f) / (50f / 3f)), 0, 2);
+
         void AssertSafe()
         {
             var targets = Targets();
             Assert.That(spawner.ActiveCount, Is.EqualTo(3));
             Assert.That(targets.Length, Is.EqualTo(3));
+            Assert.That(targets.GroupBy(target => Region(target.transform.position)).OrderBy(group => group.Key).Select(group => group.Count()), Is.EqualTo(new[] { 1, 1, 1 }), "Exactly one target per left/center/right region.");
             for (var i = 0; i < targets.Length; i++)
             {
                 var offset = targets[i].transform.position - eye;
@@ -101,6 +105,7 @@ namespace NeonReflexVR.Tests
         {
             var target = Targets()[0];
             var previous = target.transform.position;
+            var previousRegion = Region(previous);
             var untouched = Targets().Skip(1).ToArray();
             Assert.That(target.TryHit(1f), Is.True);
             Assert.That(target.TryHit(1.1f), Is.False);
@@ -116,6 +121,7 @@ namespace NeonReflexVR.Tests
             var replacement = Targets().Except(untouched).Single();
             Assert.That(Vector3.Distance(replacement.transform.position, previous), Is.GreaterThanOrEqualTo(0.649f));
             Assert.That(replacement.IsHit, Is.False);
+            Assert.That(Region(replacement.transform.position), Is.EqualTo(previousRegion));
             AssertSafe();
         }
 
@@ -152,8 +158,49 @@ namespace NeonReflexVR.Tests
             AssertSafe();
         }
 
+        [TestCase(1)]
+        [TestCase(17)]
+        [TestCase(1007)]
+        public void EveryRegionStaysOccupiedAcrossRandomSeedsAndRepeatedHits(int seed)
+        {
+            spawner.Stop();
+            Random.InitState(seed);
+            spawner.Initialize(eye, Vector3.forward, 0f);
+            AssertSafe();
+            for (var round = 0; round < 20; round++)
+            {
+                var now = round * 2f + 1f;
+                foreach (var target in Targets()) Assert.That(target.TryHit(now), Is.True);
+                spawner.Tick(now + 0.16f);
+                AssertSafe();
+            }
+        }
+
         [Test]
-        public void SavedPrefabAndScenePreserveCubesAndCameraReference()
+        public void BlockedLeftRegionRetriesWithoutSpawningInOtherRegions()
+        {
+            spawner.Stop();
+            var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            try
+            {
+                wall.transform.position = eye + new Vector3(-2.7f, -0.2f, 2f);
+                wall.transform.localScale = new Vector3(5f, 3f, 0.1f);
+                Physics.SyncTransforms();
+                LogAssert.Expect(LogType.Warning, "TargetSpawner: safe region blocked; retrying without adding unsafe targets.");
+                spawner.Initialize(eye, Vector3.forward, 0f);
+                Assert.That(spawner.ActiveCount, Is.EqualTo(2));
+                Assert.That(Targets().Any(target => Region(target.transform.position) == 0), Is.False);
+                Object.DestroyImmediate(wall);
+                Physics.SyncTransforms();
+                spawner.Tick(0.49f);
+                Assert.That(spawner.ActiveCount, Is.EqualTo(2));
+                spawner.Tick(0.51f);
+                AssertSafe();
+            }
+            finally { if (wall != null) Object.DestroyImmediate(wall); }
+        }
+        [Test]
+        public void SavedPrefabAndScenePreserveCameraWithoutOldCubes()
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Targets/Target.prefab");
             Assert.That(prefab, Is.Not.Null);
@@ -173,8 +220,8 @@ namespace NeonReflexVR.Tests
                 Assert.That(saved.View.GetComponent<Camera>(), Is.EqualTo(roots.SelectMany(root => root.GetComponentsInChildren<Camera>()).Single()));
                 Assert.That(roots.SelectMany(root => root.GetComponentsInChildren<Target>()), Is.Empty, "Spawn only in Play Mode.");
                 Assert.That(roots.SelectMany(root => root.GetComponentsInChildren<TestTargetFeedback>()).Select(item => item.name),
-                    Is.EquivalentTo(new[] { "Red Cube", "Green Cube", "Blue Cube" }));
-                // Also exercise the actual scene region against the preserved cubes and floor.
+                    Is.Empty);
+                // Exercise the actual scene region against the floor and remaining obstacles.
                 InvokeDisable();
                 spawner.Initialize(saved.View.position, saved.View.forward, 0f);
                 Physics.SyncTransforms();
