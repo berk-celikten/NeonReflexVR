@@ -9,6 +9,7 @@ namespace NeonReflexVR
     {
         [SerializeField] bool autoStart = true;
         [SerializeField] Target targetPrefab;
+        [SerializeField] Target[] targetVariants = System.Array.Empty<Target>();
         [SerializeField] Transform view;
         readonly Target[] targets = new Target[3];
         readonly float[] nextAttempt = new float[3];
@@ -23,6 +24,7 @@ namespace NeonReflexVR
 
         public bool AutoStart => autoStart;
         public Target Prefab => targetPrefab;
+        public System.Collections.Generic.IReadOnlyList<Target> Variants => targetVariants;
         public Transform View => view;
         public int ActiveCount
         {
@@ -104,7 +106,10 @@ namespace NeonReflexVR
                 if (targets[i] != null || now < nextAttempt[i]) continue;
                 if (TryNewPosition(previousPositions[i], targetRegions[i], out var position, out var region))
                 {
-                    var target = Instantiate(targetPrefab, position, Quaternion.identity, transform);
+                    var prefab = ChoosePrefab();
+                    // Static spawn pose only: variant front (-Z) faces the fixed round anchor.
+                    var rotation = prefab == targetPrefab ? Quaternion.identity : Quaternion.LookRotation(position - anchor, Vector3.up);
+                    var target = Instantiate(prefab, position, rotation, transform);
                     target.Initialize(now);
                     target.gameObject.SetActive(true);
                     targets[i] = target;
@@ -123,6 +128,14 @@ namespace NeonReflexVR
                     }
                 }
             }
+        }
+
+        Target ChoosePrefab()
+        {
+            // Empty arrays preserve the original sphere behavior and seeded position sequence.
+            if (targetVariants == null || targetVariants.Length == 0) return targetPrefab;
+            var selected = targetVariants[Random.Range(0, targetVariants.Length)];
+            return selected != null ? selected : targetPrefab;
         }
 
         float RegionWeight(int region)

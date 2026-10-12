@@ -93,6 +93,13 @@ Ana hedef Windows PC VR / Quest Link-Air Link'tir. Android APK/ADB dağıtımı 
 - [x] 94/94 EditMode (89 regresyon + 5 HUD), Console 0 hata; yakın plan 0–9/10/59/60 ve Windows-HUDFix Development build.
 - [ ] 7.3B — Quest 3'te iki gözde tam/sabit rakamlar, yavaş baş hareketi, saniye/skor geçişleri ve Ready/GameOver/restart'ı fiziksel doğrula.
 - [ ] HUD fiziksel onayından sonra Windows-BlenderGun eski build temizliğini ayrı görev olarak değerlendir.
+- [x] 7.3C — Blender CLI/bpy ile özgün HexCore/Drone/Capsule hedefleri; 3.320/3.372/2.600 üçgen, iki ortak materyal, mevcut hitbox içinde.
+- [x] Tools/Blender script/.blend/stats/preview kaynaklarını ve Assets/Art/Targets FBX/prefab/materyallerini üret; yeniden üretim yönergesini koru.
+- [x] Üç opsiyonel prefab arasında seçim ve spawn anında sabit anchor yönü; eski sphere fallback/GUID, basit collider ve layer korunur.
+- [x] 5 s / 0,15 s / üç aktif hedef / raycast / pause / skor ve oyun regresyonları; GPU iki submesh beyaz flash dahil 108/108 EditMode.
+- [x] Import/compilation/son Console 0 hata ve Windows-TargetVariants Development build (0 hata/20 bilinen uyarı); HUDFix/BlenderGun ve eski build'leri koru.
+- [ ] 7.3C — Quest 3 + Link'te üç siluet/amber okunabilirliği, merkez-kenar isabetleri, flash/yenileme ve Bloom/stereo konforu kullanıcıyla doğrula.
+- [ ] 7.3C — İki el/skor/ses/haptic/60 s/GameOver/A ve mevcut HUD rakamlarını cihazda kontrol et; aynı Link/72 Hz ile iki tur FPS/CPU/GPU karşılaştır.
 - [ ] Ready bekleme, focus/pause geri dönüşü, HMD kaybı/recenter ve 5–10 tur native kararlılığı cihazda doğrula.
 - [ ] Windows PC ve Link oturumunda CPU/GPU, kare hızı ve bellek ölçümü yap.
 - [ ] Ölçülen darboğazları gider; renderer, materyal ve hedef üretimini optimize et.

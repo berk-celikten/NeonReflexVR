@@ -1,0 +1,30 @@
+{
+  "blender_version": "5.2.0 LTS",
+  "collider_radius_m": 0.15,
+  "models": [
+    {
+      "name": "Target_HexCore",
+      "design": "Hexagonal energy reactor / clear circular strike center",
+      "triangles": 3320,
+      "materials": 2,
+      "maximum_radius_m": 0.138335,
+      "editable_parts": 17
+    },
+    {
+      "name": "Target_Drone",
+      "design": "Compact hovering drone / amber orb and swept wings",
+      "triangles": 3372,
+      "materials": 2,
+      "maximum_radius_m": 0.138465,
+      "editable_parts": 16
+    },
+    {
+      "name": "Target_Capsule",
+      "design": "Armored neon strike capsule / large amber panel",
+      "triangles": 2600,
+      "materials": 2,
+      "maximum_radius_m": 0.131145,
+      "editable_parts": 15
+    }
+  ]
+}
