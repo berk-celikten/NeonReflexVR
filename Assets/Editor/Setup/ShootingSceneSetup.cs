@@ -9,6 +9,35 @@ namespace NeonReflexVR.Editor
 {
     public static class ShootingSceneSetup
     {
+        [MenuItem("NeonReflexVR/Add Left Hand Shooting")]
+        public static void ConfigureDual()
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            if (EditorApplication.isPlaying || EditorApplication.isCompiling || scene.isDirty || scene.path != GameSceneSetup.ScenePath)
+                throw new InvalidOperationException("Open the saved GameScene outside Play Mode before configuring shooting.");
+            var transforms = scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<Transform>(true)).ToArray();
+            var left = transforms.Single(item => item.name == "Left Controller");
+            var right = transforms.Single(item => item.name == "Right Controller").GetComponent<VRRaycastShooter>();
+            if (left.GetComponent<VRRaycastShooter>() != null || right == null || right.Laser == null)
+                throw new InvalidOperationException("Expected existing right shooting and no left shooter; nothing will be overwritten.");
+            var actions = AssetDatabase.LoadAssetAtPath<InputActionAsset>(GameSceneSetup.InputPath);
+            var action = actions.FindAction("XRI Left Interaction/Activate", true);
+            var reference = AssetDatabase.LoadAllAssetsAtPath(GameSceneSetup.InputPath).OfType<InputActionReference>()
+                .Single(item => item.action != null && item.action.id == action.id && (item.hideFlags & HideFlags.HideInHierarchy) == 0);
+            // Reuse the verified settings/material; each hand owns a separate renderer and component.
+            var laserObject = UnityEngine.Object.Instantiate(right.Laser.gameObject, left, false);
+            laserObject.name = "Shot Laser";
+            var line = laserObject.GetComponent<LineRenderer>();
+            line.enabled = false;
+            var shooter = left.gameObject.AddComponent<VRRaycastShooter>();
+            EditorUtility.CopySerialized(right, shooter);
+            var serialized = new SerializedObject(shooter);
+            serialized.FindProperty("triggerAction").objectReferenceValue = reference;
+            serialized.FindProperty("laser").objectReferenceValue = line;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorSceneManager.MarkSceneDirty(scene);
+            if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Could not save GameScene.");
+        }
         [MenuItem("NeonReflexVR/Add Initial Shooting")]
         public static void Configure()
         {

@@ -16,26 +16,27 @@
 - Zemin, üç renkli küp, basit kontrolcü görselleri ve URP Unlit materyaller hazır.
 - Windows OpenXR Loader, başlangıçta XR başlatma, Oculus Touch ve Single Pass Instanced açık.
 - Kullanıcı önceki PC VR build'inde VR görüntü, baş ve iki kontrolcü tracking'ini doğruladı.
-- Aşama 3: sağ XRI Right Interaction/Activate trigger action'ı, her basışta tek Raycast atışı.
+- Aşama 3: iki kontrolcüde aynı VRRaycastShooter; Left/Right Interaction/Activate action'ları ayrı.
 - Atış menzili 20 m; 0,08 s iki noktalı lazer; üç mevcut küpte 0,15 s beyaz isabet geri bildirimi.
 - Materyal asset'leri değiştirilmez; property block geri yüklenir. Tracking/kamera/input asset korundu.
 - Yeni paket, skor, zamanlayıcı, hedef üretimi ve locomotion eklenmedi.
 
 ## Mevcut aşama ve sıradaki görev
-- Aşama 3 uygulaması ve otomatik doğrulamalar tamam; fiziksel ateş etme testi bekliyor.
-- Son doğrulanmış PC VR altyapı commit'i: `dbad5ac`; güncel commit için `git log -1`.
-- Sıradaki: Link ile sağ trigger bas/bırak/basılı tut, lazer ve üç kübün isabet geri bildirimi testi.
+- Aşama 3: çift el uygulaması ve otomatik testler tamam; sol/eşzamanlı fiziksel test bekliyor.
+- Önceki tek el ateş etme commit'i: `24e543a`; güncel commit için `git log -1`.
+- Sıradaki: Link ile her iki trigger, aynı anda/ayrı atış, basılı tutma ve aynı kübe hızlı isabet testi.
 - Baş/iki kontrolcü tracking regresyonunu da kontrol et; kullanıcı onayı olmadan fiziksel testi tamamlama.
 - Sonrasında Aşama 4: hedef prefabı/üretimi ve isabet yaşam döngüsü.
-- Yeni test EXE'si: `Builds/Windows-Shooting/NeonReflexVR.exe`; Data/DLL dosyalarıyla birlikte kullan.
-- Önceki `Builds/Windows` EXE'si ateş etme içermez; yeni testi onunla yapma.
+- Yeni test EXE'si: `Builds/Windows-DualShooting/NeonReflexVR.exe`; Data/DLL dosyalarıyla birlikte kullan.
+- Önceki Windows-Shooting build'i yalnızca sağ elle ateş eder; çift el testi için yeni EXE'yi kullan.
 
 ## Doğrulama ve bilinen sorunlar
-- Aşama 3: 14/14 EditMode testi geçti (7 sahne/tracking + 7 atış/input/geri bildirim testi).
+- Çift el: 18/18 EditMode testi geçti; bağımsız/eşzamanlı input, tek atış, isabet ve renk geri yükleme.
 - Script derlemesi başarılı; Console son kontrol: 0 hata / 26 uyarı. Windows build: 0 hata / 20 uyarı.
 - Uyarılar: eski Android→Windows Editor oturumundaki URP dizi boyutları; Editor yeniden başlatılması önerilir.
 - Diğer build uyarıları: Player'da CLI Pipeline runtime kapalı; tam Starter Assets sample klasörü yok.
-- Fiziksel ateş etme/lazer/flash süresi henüz kullanıcı tarafından doğrulanmadı.
+- Kullanıcı sağ elle trigger, lazer Raycast ve küp renk geri bildirimini fiziksel olarak doğruladı.
+- Sol el ve çift el eşzamanlı ateş etme/geri bildirim fiziksel olarak henüz doğrulanmadı.
 - Göz yüksekliği/recenter/takip kaybından dönüş/uzun süreli kararlılık kontrolleri de bekliyor.
 - Eski Android APK oluşturuldu fakat ADB cihaz göstermedi; yüklenmedi. Android artık ana hedef değil.
 - Builds, `.utmp`, `Assets/_Recovery` Git'e yüklenmez; kurtarma yedekleri korunur.
