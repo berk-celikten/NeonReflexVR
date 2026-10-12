@@ -12,6 +12,7 @@ Shader "NeonReflexVR/Arcade Panel"
         {
             Tags { "LightMode"="SRPDefaultUnlit" }
             ZWrite On
+            ZTest LEqual // Text is placed in front of this panel; keep world/decor occlusion.
             Cull Off
             HLSLPROGRAM
             #pragma target 3.0

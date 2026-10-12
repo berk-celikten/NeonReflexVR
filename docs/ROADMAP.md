@@ -78,15 +78,21 @@ Ana hedef Windows PC VR / Quest Link-Air Link'tir. Android APK/ADB dağıtımı 
 - [x] 7.3 — Kapalı sci-fi chamber, duvar/tavan portalları, combat lane ve uzak filtreli geometrik detayları oluştur.
 - [x] Sphere hitbox/beyaz flash korunarak target shader; iki lazerde ince çekirdek/glow ve sade futuristik UI.
 - [x] Doğrulanmış grid/mor/rail ve Bloom ayarlarını koru; 82/82 EditMode, Console 0 hata ve Windows-VisualOverhaul Development build.
-- [ ] 7.3 — Quest 3 + Link: yeni görünüm/okunabilirlik, aliasing/stereo konfor ve tüm oynanışı fiziksel doğrula.
+- [x] Kullanıcı Windows-BlenderGun yeni sci-fi arena, silah/lazer/hedef/ses/haptic/oyun döngüsü ve genel performansı başarılı buldu; SCORE/TIME eksikliği 7.3B'de ayrı takip edilir.
 - [ ] 7.3 — Aynı Link çözünürlük/72 Hz ayarlarıyla iki tur kısa FPS/CPU/GPU karşılaştırması yap; Perf/RailsFix onaya kadar korunur.
 - [x] 7.3A — Blender 5.2.0 LTS CLI/bpy ile özgün NR-7 blaster; 3.724 üçgen, dört materyal, 23,7 cm; bevel/panel/vent/açık namlu.
 - [x] Tools/Blender script/.blend/preview kaynakları ve Assets/Art/Weapons FBX/URP materyalleri/ortak prefabı koru; yeniden üretim yönergesi ekle.
 - [x] İki tracked controller altında Ignore Raycast/collider'sız silah; +Z/ölçek/pivot/namlu doğrulaması; yalnız görsel lazer başlangıcını bağla.
 - [x] Mevcut raycast/input/isabet/skor/ses/haptic/focus/oyun döngüsünü koru; URP build emission ve namlu öncesi engel regresyonu dahil 89/89 EditMode.
 - [x] Unity CLI import/compilation/Console 0 hata ve Windows-BlenderGun Development build (0 hata/20 bilinen uyarı); Perf/RailsFix/VisualOverhaul build'lerini koru.
-- [ ] 7.3A — Quest 3 + Link'te iki el kabza/tracking/namlu-lazer hizası, yakın stereo konfor/Bloom ve HUD/hedef görünürlüğünü kullanıcı ile doğrula.
-- [ ] 7.3A — Çift trigger/skor/ses/haptic/60 s/GameOver/A restart ve iki tur aynı Link/72 Hz FPS/CPU/GPU karşılaştırmasını cihazda tamamla.
+- [x] 7.3A — Kullanıcı Quest 3 + Link'te iki Blender silahını ve lazerleri başarılı buldu; HUD rakam onayı bu maddeye dahil değildir.
+- [x] 7.3A — Kullanıcı Windows-BlenderGun hedef/ses/haptic/oyun döngüsü ve genel performansı başarılı buldu.
+- [ ] 7.3A — Nicel iki tur aynı Link/72 Hz FPS/CPU/GPU karşılaştırmasını tamamla.
+- [x] 7.3B — Coplanar ZWrite panel/metin örtülmesini 2° Editor GPU görünümünde yeniden üret; font/alan/clipping/atlası incele.
+- [x] Metin/panel 24 mm ve çerçeve 3 mm ayrımı; aynı font/Bold/64 boyut/tasarım; global render ve oynanış ayarlarını koru.
+- [x] 94/94 EditMode (89 regresyon + 5 HUD), Console 0 hata; yakın plan 0–9/10/59/60 ve Windows-HUDFix Development build.
+- [ ] 7.3B — Quest 3'te iki gözde tam/sabit rakamlar, yavaş baş hareketi, saniye/skor geçişleri ve Ready/GameOver/restart'ı fiziksel doğrula.
+- [ ] HUD fiziksel onayından sonra Windows-BlenderGun eski build temizliğini ayrı görev olarak değerlendir.
 - [ ] Ready bekleme, focus/pause geri dönüşü, HMD kaybı/recenter ve 5–10 tur native kararlılığı cihazda doğrula.
 - [ ] Windows PC ve Link oturumunda CPU/GPU, kare hızı ve bellek ölçümü yap.
 - [ ] Ölçülen darboğazları gider; renderer, materyal ve hedef üretimini optimize et.

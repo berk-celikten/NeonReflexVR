@@ -144,6 +144,7 @@ namespace NeonReflexVR.Editor
                     Bar(panel, name + " Vertical", anchor, offset + new Vector2(0, y == 0 ? 12 : -12), new Vector2(4, 28), cyan);
                     Bar(panel, name + " Horizontal", anchor, offset + new Vector2(x == 0 ? 18 : -18, 0), new Vector2(40, 4), cyan);
                 }
+            ArcadeUiSceneSetup.ApplyStableDepth(label);
         }
         static void Bar(RectTransform panel, string name, Vector2 anchor, Vector2 position, Vector2 size, Color color)
         {

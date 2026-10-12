@@ -9,6 +9,39 @@ namespace NeonReflexVR.Editor
 {
     public static class ArcadeUiSceneSetup
     {
+        /// <summary>Keep depth-writing backdrop, frame and glyphs on distinct planes at the existing scale.</summary>
+        public static void ApplyStableDepth(Text label)
+        {
+            var panel = label.canvas.transform.Find("Arcade Backdrop");
+            if (panel == null) throw new InvalidOperationException("Existing arcade backdrop required.");
+            var textPosition = label.rectTransform.anchoredPosition3D;
+            textPosition.z = -8f; // 12 mm towards the viewer at the existing 0.0015 scale.
+            label.rectTransform.anchoredPosition3D = textPosition;
+            var panelRect = (RectTransform)panel;
+            var panelPosition = panelRect.anchoredPosition3D;
+            panelPosition.z = 8f; // 24 mm total text/backdrop separation; no font or resolution change.
+            panelRect.anchoredPosition3D = panelPosition;
+            foreach (var image in panel.GetComponentsInChildren<Image>())
+            {
+                if (image.transform == panel) continue;
+                var rect = image.rectTransform;
+                var position = rect.anchoredPosition3D;
+                position.z = -2f; // Keep decorative borders just in front of the depth-writing backdrop.
+                rect.anchoredPosition3D = position;
+            }
+        }
+
+        [MenuItem("NeonReflexVR/Fix Scoreboard Text Depth")]
+        public static void FixScoreboardRendering()
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            if (EditorApplication.isPlaying || EditorApplication.isCompiling || scene.isDirty || scene.path != GameSceneSetup.ScenePath)
+                throw new InvalidOperationException("Open saved GameScene outside Play Mode.");
+            var manager = scene.GetRootGameObjects().Single(root => root.name == "Game Manager").GetComponent<GameManager>();
+            ApplyStableDepth(manager.StatusText);
+            EditorSceneManager.MarkSceneDirty(scene);
+            if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Scene save failed.");
+        }
         [MenuItem("NeonReflexVR/Configure Arcade UI")]
         public static void Configure()
         {
@@ -47,6 +80,7 @@ namespace NeonReflexVR.Editor
             var labelRect = (RectTransform)label.transform;
             labelRect.offsetMin = new Vector2(24f, 12f);
             labelRect.offsetMax = new Vector2(-24f, -12f);
+            ApplyStableDepth(label);
             canvas.sizeDelta = new Vector2(900f, 440f);
             canvas.position = manager.Spawner.View.position + manager.Spawner.View.forward * 2f + Vector3.up * 0.05f;
             var data = new SerializedObject(manager);
