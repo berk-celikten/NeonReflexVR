@@ -73,7 +73,13 @@ Ana hedef Windows PC VR / Quest Link-Air Link'tir. Android APK/ADB dağıtımı 
 ## 7. Performans ve yayın adayı
 - [x] 7.1 — Development Player tanılama, FrameTiming/ProfilerRecorder/XR sayaçları ve bounded rapor altyapısı.
 - [x] Odak/pause için sayaç/expiry durdurma; hesap/unavailable ve kararlılık dahil 73/73 EditMode; Windows-Perf build.
-- [ ] 7.1 — Fiziksel FPS/p99/CPU/GPU/GC ve ölçüm overhead verilerini Quest 3 + Link ile al.
+- [x] Kullanıcı Windows-Perf iki tur/72 Hz HUD testini yaptı: Player 40–60 FPS, CPU frame 16,7–25 ms, GPU 2,7–3,3 ms; >33,3 ms spike yok/XR dropped 0.
+- [ ] 7.1 — Ayrıntılı p99/GC, gerçek CPU yükü/bekleme ayrımı ve ölçüm overhead verilerini tamamla; ileri optimizasyon ertelendi.
+- [x] 7.3 — Kapalı sci-fi chamber, duvar/tavan portalları, combat lane ve uzak filtreli geometrik detayları oluştur.
+- [x] Sphere hitbox/beyaz flash korunarak target shader; iki lazerde ince çekirdek/glow ve sade futuristik UI.
+- [x] Doğrulanmış grid/mor/rail ve Bloom ayarlarını koru; 82/82 EditMode, Console 0 hata ve Windows-VisualOverhaul Development build.
+- [ ] 7.3 — Quest 3 + Link: yeni görünüm/okunabilirlik, aliasing/stereo konfor ve tüm oynanışı fiziksel doğrula.
+- [ ] 7.3 — Aynı Link çözünürlük/72 Hz ayarlarıyla iki tur kısa FPS/CPU/GPU karşılaştırması yap; Perf/RailsFix onaya kadar korunur.
 - [ ] Ready bekleme, focus/pause geri dönüşü, HMD kaybı/recenter ve 5–10 tur native kararlılığı cihazda doğrula.
 - [ ] Windows PC ve Link oturumunda CPU/GPU, kare hızı ve bellek ölçümü yap.
 - [ ] Ölçülen darboğazları gider; renderer, materyal ve hedef üretimini optimize et.

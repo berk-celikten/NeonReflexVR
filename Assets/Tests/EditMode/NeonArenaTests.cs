@@ -47,18 +47,18 @@ namespace NeonReflexVR.Tests
         {
             var arena = roots.Single(x => x.name == "Neon Arena");
             var renderers = arena.GetComponentsInChildren<MeshRenderer>();
-            Assert.That(renderers.Length, Is.EqualTo(3));
-            Assert.That(arena.GetComponentsInChildren<Transform>().Length, Is.EqualTo(5));
+            Assert.That(renderers.Length, Is.EqualTo(8));
+            Assert.That(arena.GetComponentsInChildren<Transform>().Length, Is.EqualTo(11));
             Assert.That(arena.GetComponentsInChildren<Light>(), Is.Empty);
             foreach (var renderer in renderers)
             {
                 var mesh = renderer.GetComponent<MeshFilter>().sharedMesh;
                 Assert.That(EditorUtility.IsPersistent(mesh), Is.True);
-                Assert.That(mesh.vertexCount, Is.LessThan(150));
+                Assert.That(mesh.vertexCount, Is.LessThan(renderer.transform.parent.name == "Training Chamber" ? 2000 : 150));
                 Assert.That(EditorUtility.IsPersistent(renderer.sharedMaterial), Is.True);
                 Assert.That(renderer.sharedMaterial.shader.name, Is.EqualTo(renderer.name == "Neon Grid"
-                    ? "NeonReflexVR/Stable Neon Grid" : (renderer.name == "Distant Frames" || renderer.name == "Side Rails")
-                    ? "NeonReflexVR/Stable Neon Lines" : "Universal Render Pipeline/Unlit"));
+                    ? "NeonReflexVR/Stable Neon Grid" : (renderer.name == "Distant Frames" || renderer.name == "Side Rails" || renderer.name == "Chamber Cyan" || renderer.name == "Chamber Violet")
+                    ? "NeonReflexVR/Stable Neon Lines" : "NeonReflexVR/Chamber Surface"));
                 Assert.That(renderer.shadowCastingMode, Is.EqualTo(ShadowCastingMode.Off));
             }
             var grid = arena.transform.Find("Neon Grid").GetComponent<MeshFilter>().sharedMesh;
@@ -137,7 +137,7 @@ namespace NeonReflexVR.Tests
             Assert.That(vertical, Is.EqualTo(6));
         }
         [Test]
-        public void RailsReuseStableShaderWithoutChangingSharedBlueLaserMaterial()
+        public void RailsReuseStableShaderWithoutChangingOriginalBlueColor()
         {
             var material = roots.Single(x => x.name == "Neon Arena").transform.Find("Side Rails").GetComponent<Renderer>().sharedMaterial;
             var blue = AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/NeonArena/ArenaBlue.mat");
@@ -155,7 +155,8 @@ namespace NeonReflexVR.Tests
             Assert.That(color.r / color.b, Is.EqualTo(original.r / original.b).Within(0.0001f));
             Assert.That(color.g / color.b, Is.EqualTo(original.g / original.b).Within(0.0001f));
             var right = roots.SelectMany(x => x.GetComponentsInChildren<VRRaycastShooter>()).Single(x => x.name == "Right Controller");
-            Assert.That(right.Laser.sharedMaterial, Is.SameAs(blue));
+            Assert.That(Vector4.Distance(blue.GetColor("_BaseColor"), new Color(0.08f, 0.55f, 2f)), Is.LessThan(0.0001f));
+            Assert.That(right.Laser.sharedMaterial.shader.name, Is.EqualTo("NeonReflexVR/Arcade Beam"));
         }
         [Test]
         public void ZParallelRailsHaveNonDegeneratePaddedQuadsAndFiniteFilterCoordinates()
@@ -240,8 +241,8 @@ namespace NeonReflexVR.Tests
                 Assert.That(serialized.FindProperty("laserDuration").floatValue, Is.EqualTo(0.08f));
                 Assert.That(shooter.TriggerAction, Is.Not.Null);
                 Assert.That(shooter.HitHaptics, Is.Not.Null);
-                Assert.That(shooter.Laser.startWidth, Is.EqualTo(0.006f));
-                Assert.That(shooter.Laser.endWidth, Is.EqualTo(0.003f));
+                Assert.That(shooter.Laser.startWidth, Is.EqualTo(0.014f));
+                Assert.That(shooter.Laser.endWidth, Is.EqualTo(0.008f));
                 Assert.That(shooter.Laser.sharedMaterial, Is.Not.Null);
                 Assert.That(shooter.Laser.enabled, Is.False);
             }

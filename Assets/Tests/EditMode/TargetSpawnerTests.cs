@@ -226,7 +226,7 @@ namespace NeonReflexVR.Tests
             Assert.That(prefab.GetComponent<Target>(), Is.Not.Null);
             Assert.That(prefab.GetComponent<TestTargetFeedback>(), Is.Not.Null);
             Assert.That(prefab.GetComponent<SphereCollider>().isTrigger, Is.False);
-            Assert.That(prefab.GetComponent<Renderer>().sharedMaterial.shader.name, Is.EqualTo("Universal Render Pipeline/Unlit"));
+            Assert.That(prefab.GetComponent<Renderer>().sharedMaterial.shader.name, Is.EqualTo("NeonReflexVR/Arcade Target"));
             const string path = "Assets/Scenes/GameScene.unity";
             var scene = SceneManager.GetSceneByPath(path);
             var opened = !scene.isLoaded;
