@@ -11,7 +11,7 @@ Meta Quest 3 üzerinde bağımsız (standalone) çalışması hedeflenen küçü
 - Unity Pipeline: `com.unity.pipeline` sürümü `0.8.0-exp.1` (deneysel).
 - Yerel Unity CLI: `1.0.0-beta.12` (`unity --version` ile doğrulandı).
 - Hedef cihaz: Meta Quest 3; hedef platform: Android standalone VR.
-- Planlanan XR altyapısı: OpenXR ve XR Interaction Toolkit. 12 Ekim 2026 incelemesinde bu iki paket manifest ve paket kilit dosyasında bulunmamaktadır; henüz kurulmamıştır.
+- XR Plug-in Management: `4.6.1`; OpenXR Plugin: `1.16.1`; XR Interaction Toolkit: `3.3.2`. Sürümler Unity 6000.3.26f1 Package Manager recommended ve compatible bilgileriyle doğrulanmıştır.
 
 Unity Pipeline, Unity CLI'nin Editor ile iletişimini sağlayan pakettir: [Unity belgeleri](https://docs.unity.com/en-us/unity-cli/unity-pipeline/unity-pipeline-package). Paketin projede bulunması, ayrı CLI aracının kurulmuş veya erişilebilir olduğunu tek başına doğrulamaz.
 
@@ -21,7 +21,7 @@ Unity Hub üzerinden bu klasörü Unity `6000.3.26f1` ile açın. `Assets`, `Pac
 
 ## Mevcut aşama
 
-İlk görev yalnızca altyapı incelemesi ve yerel Git hazırlığıdır. Oyun mekanikleri bu görev kapsamında geliştirilmemiştir. Paketler ve sahneler değiştirilmemiştir. Quest 3 cihaz testi veya Android oyuncu derlemesi yapılmamıştır.
+Quest 3 standalone için Android XR altyapısı yapılandırılmıştır. Yeni oyun mekaniği veya VR sahnesi oluşturulmamıştır. Mevcut sahneler ve varlıklar korunmuştur. Quest 3 cihaz testi veya Android oyuncu derlemesi yapılmamıştır.
 
 Mevcut Editor.log içinde C# derleme hatası görülmemiş ve son script derlemesinin başarılı olduğu kaydedilmiştir. Logda `Native extension for Android target not found` mesajı vardır; Android derleme desteği ayrıca incelenmelidir. AssetImportWorker loglarında `-noUpm` nedeniyle Package Manager başlatılamadığı ve `Curl error 3` URL hatası kayıtları bulunmaktadır. Bunların mevcut ana Editor oturumunu engellediği doğrulanmamıştır.
 
@@ -29,8 +29,22 @@ Mevcut Editor.log içinde C# derleme hatası görülmemiş ve son script derleme
 
 `Assets`, varlıkların `.meta` dosyaları, `Packages/manifest.json`, `Packages/packages-lock.json` ve `ProjectSettings` sürüm kontrolünde korunmalıdır. `Library`, `Temp`, `Obj`, `Logs`, `Builds`, kullanıcı ayarları ve üretilen IDE dosyaları `.gitignore` ile hariç tutulur.
 
-GitHub bağlantısı ve ilk push sonraki aşamada birlikte yapılacaktır. Geliştirme kuralları için `AGENTS.md` dosyasını okuyun.
+Repository [GitHub üzerinde PUBLIC](https://github.com/berk-celikten/NeonReflexVR) olarak yayınlanmaktadır. Geliştirme kuralları için `AGENTS.md` dosyasını okuyun.
 
 ## Üçüncü taraf lisans bildirimleri
 
 Unity URP şablonundan gelen içeriklerin telif bildirimleri ve Unity Companion License'ın tam metni [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) dosyasındadır. Bu lisans ilgili Unity içeriği ve türevleri için geçerlidir; NeonReflexVR için geliştireceğimiz özgün oyun koduna ve projenin tamamına uygulanmaz. Özgün içerik için henüz proje genelinde bir açık kaynak lisansı seçilmemiştir. Paketler kendi lisans koşullarına tabidir.
+
+## Quest 3 XR yapılandırması — Aşama 1.6
+
+- Android Build Support, SDK/NDK Tools ve OpenJDK kurulumu Unity CLI ile doğrulandı. Aktif build hedefi Android.
+- Android'de OpenXR Loader ve başlangıçta XR başlatma etkin.
+- Meta Quest Support açık; hedef cihaz Quest 3 (`eureka`). Oculus Touch Controller Profile açık.
+- Scripting backend IL2CPP, mimari ARM64, minimum Android API 32; Target API Level Unity'nin Automatic ayarında. [Meta Android manifest gereksinimleri](https://developers.meta.com/vr/documentation/native/android/mobile-native-manifest/).
+- Input System etkin; OpenXR için InputSystem.XR.PoseControl ve StickControl thumbstick tanımları eklendi. Latency Optimization, Prioritize Input Polling olarak ayarlandı; Run In Background açık.
+- OpenXR render modu Single Pass Instanced / Android Multiview. Android yalnızca Mobile kalite seviyesini ve `Mobile_RPAsset` / `Mobile_Renderer` yolunu kullanır.
+- UPM tarafından çözümlenen dolaylı XR bağımlılıkları: XR Core Utilities `2.6.0`, XR Legacy Input Helpers `2.1.13`. Meta XR All-in-One SDK, ek Meta OpenXR paketi ve deneysel XR paketi eklenmedi; paket sample'ları içe aktarılmadı.
+- Script derlemesi başarılı, güncel Console kontrolünde 0 hata ve 0 uyarı. XR Project Validation'da 0 hata ve 1 engelleyici olmayan SSAO performans uyarısı var. Bu uyarı PC renderer içindeki SSAO'dan kaynaklanır; PC kalite seviyesi Android'de hariç tutulur ve Mobile renderer'da SSAO bulunmaz. Mevcut render varlıkları değiştirilmemiştir.
+- Android hedef geçişindeki geçmiş CLI kaydında bir ana iş parçacığı zaman aşımı; shader içe aktarımında 18 D3D11 hassasiyet uyarısı vardır. Bunlar güncel Console/derleme hatası değildir; geçiş ve derleme sonrasında kontrol edilmiştir.
+
+APK build, VR sahnesi ve cihazda kontrolcü/performans testi sonraki görevlerin kapsamındadır. İlk APK aşamasında otomatik Target API seçimi ve gerekli SDK platformu ayrıca doğrulanmalıdır.
