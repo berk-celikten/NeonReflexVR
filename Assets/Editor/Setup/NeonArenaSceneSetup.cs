@@ -26,7 +26,6 @@ namespace NeonReflexVR.Editor
             if (!AssetDatabase.IsValidFolder(Folder)) AssetDatabase.CreateFolder("Assets/Materials", "NeonArena");
             var dark = MaterialAsset("ArenaDark", new Color(0.012f, 0.018f, 0.036f));
             var cyan = MaterialAsset("ArenaCyan", new Color(0.08f, 1.45f, 1.9f));
-            var violet = MaterialAsset("ArenaViolet", new Color(0.85f, 0.15f, 1.65f));
             var blue = MaterialAsset("ArenaBlue", new Color(0.08f, 0.55f, 2f));
             var target = AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/VRTest/Target.mat");
             if (target == null) throw new InvalidOperationException("Missing target material.");
@@ -44,15 +43,7 @@ namespace NeonReflexVR.Editor
             var root = scene.GetRootGameObjects().SingleOrDefault(x => x.name == "Neon Arena") ?? new GameObject("Neon Arena");
             root.layer = 2; // Ignore Raycast; children also have no colliders.
             ConfigureGrid(root);
-            var frames = new Strips();
-            foreach (var z in new[] { 6f, 8f, 10f })
-            {
-                frames.Add(new Vector3(-5, 0.02f, z), new Vector3(-5, 5.8f, z), Vector3.back, 0.025f);
-                frames.Add(new Vector3(5, 0.02f, z), new Vector3(5, 5.8f, z), Vector3.back, 0.025f);
-                frames.Add(new Vector3(-5, 5.8f, z), new Vector3(5, 5.8f, z), Vector3.back, 0.025f);
-                frames.Add(new Vector3(-5, 0.025f, z), new Vector3(5, 0.025f, z), Vector3.up, 0.025f);
-            }
-            MeshObject(root, "Distant Frames", frames, violet);
+            ConfigurePurpleLines(root);
             var rails = new Strips();
             foreach (var x in new[] { -5f, 5f })
             {
@@ -131,6 +122,38 @@ namespace NeonReflexVR.Editor
             grid.indices.AddRange(new[] { 0, 1, 2, 0, 2, 3 });
             MeshObject(root, "Neon Grid", grid, material);
         }
+        [MenuItem("NeonReflexVR/Fix Purple Neon Lines")]
+        public static void FixPurpleLines()
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            if (EditorApplication.isPlaying || EditorApplication.isCompiling || scene.isDirty || scene.path != GameSceneSetup.ScenePath)
+                throw new InvalidOperationException("Open saved GameScene outside Play Mode.");
+            ConfigurePurpleLines(scene.GetRootGameObjects().Single(x => x.name == "Neon Arena"));
+            EditorSceneManager.MarkSceneDirty(scene);
+            if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Scene save failed.");
+        }
+        static void ConfigurePurpleLines(GameObject root)
+        {
+            var shader = Shader.Find("NeonReflexVR/Stable Neon Lines");
+            var material = AssetDatabase.LoadAssetAtPath<Material>(Folder + "/ArenaViolet.mat");
+            if (shader == null || material == null) throw new InvalidOperationException("Existing violet material and stable lines shader required.");
+            material.shader = shader;
+            material.SetColor("_BaseColor", new Color(0.7f, 0.12f, 0.95f));
+            material.SetFloat("_LineWidth", 0.04f);
+            material.SetFloat("_FadeStart", 8f);
+            material.SetFloat("_FadeEnd", 18f);
+            EditorUtility.SetDirty(material);
+            AssetDatabase.SaveAssetIfDirty(material);
+            var frames = new Strips();
+            foreach (var z in new[] { 6f, 8f, 10f })
+            {
+                frames.AddFiltered(new Vector3(-5, 0.02f, z), new Vector3(-5, 5.8f, z));
+                frames.AddFiltered(new Vector3(5, 0.02f, z), new Vector3(5, 5.8f, z));
+                frames.AddFiltered(new Vector3(-5, 5.8f, z), new Vector3(5, 5.8f, z));
+                frames.AddFiltered(new Vector3(-5, 0.025f, z), new Vector3(5, 0.025f, z));
+            }
+            MeshObject(root, "Distant Frames", frames, material);
+        }
         static Material MaterialAsset(string name, Color color)
         {
             var path = Folder + "/" + name + ".mat";
@@ -155,6 +178,7 @@ namespace NeonReflexVR.Editor
             mesh.Clear();
             mesh.SetVertices(strips.vertices);
             mesh.SetTriangles(strips.indices, 0);
+            if (strips.lineData.Count > 0) mesh.SetUVs(0, strips.lineData);
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
             EditorUtility.SetDirty(mesh);
@@ -177,6 +201,24 @@ namespace NeonReflexVR.Editor
         {
             public readonly List<Vector3> vertices = new List<Vector3>();
             public readonly List<int> indices = new List<int>();
+            public readonly List<Vector3> lineData = new List<Vector3>();
+            public void AddFiltered(Vector3 a, Vector3 b)
+            {
+                // Invisible support margin allows the fragment filter to cover subpixel edges/end caps.
+                const float padding = 0.08f;
+                var direction = (b - a).normalized;
+                var side = Vector3.Cross(direction, Vector3.back) * padding;
+                var halfLength = Vector3.Distance(a, b) * 0.5f;
+                var start = vertices.Count;
+                vertices.Add(a - direction * padding - side); vertices.Add(a - direction * padding + side);
+                vertices.Add(b + direction * padding + side); vertices.Add(b + direction * padding - side);
+                lineData.Add(new Vector3(-halfLength - padding, -padding, halfLength));
+                lineData.Add(new Vector3(-halfLength - padding, padding, halfLength));
+                lineData.Add(new Vector3(halfLength + padding, padding, halfLength));
+                lineData.Add(new Vector3(halfLength + padding, -padding, halfLength));
+                indices.Add(start); indices.Add(start + 1); indices.Add(start + 2);
+                indices.Add(start); indices.Add(start + 2); indices.Add(start + 3);
+            }
             public void Add(Vector3 a, Vector3 b, Vector3 normal, float width)
             {
                 var side = Vector3.Cross((b - a).normalized, normal) * width * 0.5f;

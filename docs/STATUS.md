@@ -20,10 +20,11 @@
 - Tek 2D AudioSource/tek XR AudioListener; yalnız geçerli Playing atışı/ilk isabet ve gerçek durum geçişi ses üretir.
 - Başarılı ilk isabette yalnız ateş eden el: haptics genlik 0,12 / süre 0,08 s; desteksiz cihaz sessizce atlanır.
 - Kullanıcı Windows-Audio dört ses, kontrolcü titreşimi, isabet/ıskalama ve restart geri bildirimlerini doğruladı.
-- 20b977c GitHub main'e normal push ile gönderildi ve uzak SHA doğrulandı.
 - 6.3 koyu zemin, cyan grid, mavi/mor dekor: üç ortak renderer; kullanıcı genel oynanış/performansı kabul edilebilir buldu.
 - GridFix: 9 mm mesh şerit yerine tek quad, özgün URP shader ile piksel kapsamı AA; 3 cm çizgi / 1,5 m aralık.
-- Grid 3–7 m mesafede solar; ayrı SDR materyal Bloom katkısını sınırlar; texture/mipmap, TAA veya global MSAA değişikliği yok.
+- Grid 3–7 m mesafede solar; ayrı SDR materyal; kullanıcı cyan grid fiziksel testini başarılı buldu.
+- Mor DistantFrames: sonlu çizgi piksel kapsamı/kenar ve uç filtreleme shader'ı; 4 cm çekirdek, 8–18 m fade.
+- ArenaViolet SDR mor; 12 destek quad'ı/tek mesh; stereo makroları; global AA/Bloom ve mavi SideRails değişmedi.
 - Dekorasyonda collider/ışık yok; Ignore Raycast; zemin yüksekliği ve XR Origin korunur.
 - HDR turuncu Unlit hedef; mevcut beyaz _BaseColor flash/collider korunur; bağımsız ince cyan/mavi lazerler.
 - Global Bloom: yoğunluk 0,15, eşik 1,3, scatter 0,35, Quarter, dört iterasyon; kamera post-processing açık.
@@ -31,17 +32,17 @@
 - Windows-UI silindi: yaklaşık 178,3 MiB; fiziksel olarak doğrulanmış Windows-Audio'ın 333 dosyası korundu.
 
 ## Mevcut aşama ve sıradaki görev
-- Kullanıcı Windows-Neon oyun/HUD/skor/hedef/iki el/ses/haptic/restart'ı doğruladı; uzak grid kesikliği gözlendi.
-- GridFix uygulama/test/build tamam; yeni çizgi kalitesinin Quest 3 fiziksel testi bekliyor.
-- Güncel commit için `git log -1`; yeni EXE `Builds/Windows-NeonFix/NeonReflexVR.exe`.
-- Sıradaki: yakın/orta/uzak grid, yavaş baş hareketinde kırılma/titreşim, fade geçişi ve akıcılık kontrolü.
-- Windows-Neon ve Windows-Audio korundu; bu görevde eski build temizliği yapılmadı.
+- Kullanıcı Windows-NeonFix cyan grid ve tüm oyun sistemlerini doğruladı; yalnız mor çizgiler parçalı göründü.
+- Mor çizgi düzeltmesi uygulama/test/build tamam; Quest 3 fiziksel testi bekliyor.
+- Güncel commit için `git log -1`; yeni EXE `Builds/Windows-NeonLinesFix/NeonReflexVR.exe`.
+- Sıradaki: mor yatay/dikey çizgiler, yakın/uzak ve yavaş baş hareketi, fade/konfor/akıcılık kontrolü.
+- Windows-NeonFix ve önceki build'ler korundu; bu görevde eski build temizliği yapılmadı.
 
 ## Doğrulama ve bilinen sorunlar
-- 61/61 EditMode geçti: tüm mevcut regresyonlar + grid shader/mesh/materyal/fade ve bağımsız lazer referansları.
-- Derleme başarılı; Windows-NeonFix Development build 0 hata / 20 bilinen uyarı.
+- 63/63 EditMode geçti: 61 mevcut regresyon + mor materyal/shader/fade ve yatay/dikey mesh filtre koordinatı testleri.
+- Derleme başarılı; Windows-NeonLinesFix Development build 0 hata / 20 bilinen uyarı.
 - Console 0 hata / 26 uyarı; URP reflection/shadow array boyutu uyarıları Editor oturumunda tekrarlanıyor.
-- GridFix masaüstü kamera önizlemesi incelendi; shader derleme hatası yok; stereo cihaz testi yerine geçmez.
-- Fiziksel genel performans kabul edilebilir; GPU/kare hızı ölçülmedi. GridFix titreşim/uzak çizgi testi bekliyor.
+- Mor çizgi masaüstü kamera önizlemesi incelendi; shader hatası yok; stereo cihaz testi yerine geçmez.
+- Fiziksel genel performans kabul edilebilir; GPU/kare hızı ölçülmedi. Mor çizgi cihaz testi bekliyor.
 - Recenter, takip kaybı, odak kaybı ve uzun süreli kararlılık ayrıca takip edilir.
 - Builds, Temp/Library, `.utmp`, `Assets/_Recovery` Git'e yüklenmez; [ROADMAP](ROADMAP.md).

@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ArenaViolet
-  m_Shader: {fileID: 4800000, guid: 650dd9526735d5b46b79224bc6e94025, type: 3}
+  m_Shader: {fileID: 4800000, guid: 1c4380cc588f31146944e9e8ad405c9e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -30,8 +30,7 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap:
-    RenderType: Opaque
+  stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
@@ -57,6 +56,9 @@ Material:
     - _Cutoff: 0.5
     - _DstBlend: 0
     - _DstBlendAlpha: 0
+    - _FadeEnd: 18
+    - _FadeStart: 8
+    - _LineWidth: 0.04
     - _QueueOffset: 0
     - _SampleGI: 0
     - _SrcBlend: 1
@@ -65,7 +67,7 @@ Material:
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.85, g: 0.15, b: 1.65, a: 1}
+    - _BaseColor: {r: 0.7, g: 0.12, b: 0.95, a: 1}
     - _Color: {r: 0.85, g: 0.14999998, b: 1.65, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

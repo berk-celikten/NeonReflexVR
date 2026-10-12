@@ -57,7 +57,8 @@ namespace NeonReflexVR.Tests
                 Assert.That(mesh.vertexCount, Is.LessThan(150));
                 Assert.That(EditorUtility.IsPersistent(renderer.sharedMaterial), Is.True);
                 Assert.That(renderer.sharedMaterial.shader.name, Is.EqualTo(renderer.name == "Neon Grid"
-                    ? "NeonReflexVR/Stable Neon Grid" : "Universal Render Pipeline/Unlit"));
+                    ? "NeonReflexVR/Stable Neon Grid" : renderer.name == "Distant Frames"
+                    ? "NeonReflexVR/Stable Neon Lines" : "Universal Render Pipeline/Unlit"));
                 Assert.That(renderer.shadowCastingMode, Is.EqualTo(ShadowCastingMode.Off));
             }
             var grid = arena.transform.Find("Neon Grid").GetComponent<MeshFilter>().sharedMesh;
@@ -86,6 +87,54 @@ namespace NeonReflexVR.Tests
                 Assert.That(shooter.Laser.sharedMaterial, Is.Not.SameAs(material));
             var floor = roots.SelectMany(x => x.GetComponentsInChildren<Transform>()).Single(x => x.name == "Floor");
             Assert.That(material.GetColor("_FloorColor"), Is.EqualTo(floor.GetComponent<Renderer>().sharedMaterial.GetColor("_BaseColor")));
+        }
+        [Test]
+        public void PurpleLinesUseIndependentFilteredLowBloomMaterialWithSmoothDistanceRange()
+        {
+            var material = roots.Single(x => x.name == "Neon Arena").transform.Find("Distant Frames").GetComponent<Renderer>().sharedMaterial;
+            Assert.That(material, Is.EqualTo(AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/NeonArena/ArenaViolet.mat")));
+            Assert.That(material.shader.name, Is.EqualTo("NeonReflexVR/Stable Neon Lines"));
+            Assert.That(material.shader.isSupported, Is.True);
+            Assert.That(ShaderUtil.ShaderHasError(material.shader), Is.False);
+            Assert.That(material.passCount, Is.EqualTo(1));
+            Assert.That(material.GetFloat("_LineWidth"), Is.EqualTo(0.04f));
+            Assert.That(material.GetFloat("_FadeStart"), Is.EqualTo(8f));
+            Assert.That(material.GetFloat("_FadeEnd"), Is.EqualTo(18f));
+            var color = material.GetColor("_BaseColor");
+            Assert.That(color.b, Is.GreaterThan(color.r));
+            Assert.That(color.r, Is.GreaterThan(color.g));
+            Assert.That(color.maxColorComponent, Is.LessThanOrEqualTo(1f));
+            Assert.That(material.renderQueue, Is.EqualTo(3000));
+        }
+        [Test]
+        public void HorizontalVerticalPurpleSegmentsHavePaddedFilterCoordinatesAndFiniteEnds()
+        {
+            var mesh = roots.Single(x => x.name == "Neon Arena").transform.Find("Distant Frames").GetComponent<MeshFilter>().sharedMesh;
+            var vertices = mesh.vertices;
+            var coordinates = new System.Collections.Generic.List<Vector3>();
+            mesh.GetUVs(0, coordinates);
+            Assert.That(vertices.Length, Is.EqualTo(48));
+            Assert.That(mesh.triangles.Length, Is.EqualTo(72));
+            Assert.That(coordinates.Count, Is.EqualTo(vertices.Length));
+            var horizontal = 0;
+            var vertical = 0;
+            for (var i = 0; i < vertices.Length; i += 4)
+            {
+                var direction = (vertices[i + 3] - vertices[i]).normalized;
+                if (Mathf.Abs(direction.x) > 0.99f) horizontal++;
+                else if (Mathf.Abs(direction.y) > 0.99f) vertical++;
+                else Assert.Fail("Expected horizontal or vertical frame segment.");
+                Assert.That(vertices[i].z, Is.EqualTo(vertices[i + 2].z));
+                Assert.That(coordinates[i].x, Is.LessThan(-coordinates[i].z));
+                Assert.That(coordinates[i + 2].x, Is.GreaterThan(coordinates[i].z));
+                Assert.That(coordinates[i].y, Is.LessThan(-0.02f));
+                Assert.That(coordinates[i + 1].y, Is.GreaterThan(0.02f));
+                Assert.That(coordinates[i].z, Is.GreaterThan(2f));
+                for (var corner = 0; corner < 4; corner++)
+                    Assert.That(coordinates[i + corner].z, Is.EqualTo(coordinates[i].z));
+            }
+            Assert.That(horizontal, Is.EqualTo(6));
+            Assert.That(vertical, Is.EqualTo(6));
         }
         [Test]
         public void BloomIsLowCostAndBelowUiWhiteThresholdWithOneXrCamera()

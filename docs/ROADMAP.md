@@ -62,7 +62,9 @@ Ana hedef Windows PC VR / Quest Link-Air Link'tir. Android APK/ADB dağıtımı 
 - [x] Kontrollü URP Bloom, altı görsel/physics testi, 60/60 regresyon ve Windows-Neon build doğrulandı.
 - [x] 6.3 — Kullanıcı Windows-Neon oynanış/HUD/skor/hedef/iki el/ses/haptic/restart'ı doğruladı; genel performans kabul edilebilir.
 - [x] Grid aliasing düzeltmesi: tek quad, analitik AA, daha geniş/seyrek çizgiler, mesafe fade; 61/61 test ve NeonFix build.
-- [ ] Windows-NeonFix uzak grid stabilitesi, baş hareketinde titreşim ve görsel konfor fiziksel testi.
+- [x] Kullanıcı Windows-NeonFix cyan grid'in düzgün olduğunu ve diğer oyun sistemlerinin çalıştığını doğruladı.
+- [x] Mor çizgi aliasing düzeltmesi: sonlu çizgi kapsam filtresi, SDR mor ve fade; 63/63 test, NeonLinesFix build.
+- [ ] Windows-NeonLinesFix mor yatay/dikey çizgi stabilitesi, mesafe geçişi ve performans fiziksel testi.
 - [ ] Okunabilirlik, ses dengesi, kullanıcı konforu ve sınırları doğrula.
 - [ ] Odağı kaybetme, uygulamaya geri dönme ve yeniden oynama akışlarını test et.
 
