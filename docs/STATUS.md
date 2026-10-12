@@ -24,25 +24,26 @@
 - GridFix: 9 mm mesh şerit yerine tek quad, özgün URP shader ile piksel kapsamı AA; 3 cm çizgi / 1,5 m aralık.
 - Grid 3–7 m mesafede solar; ayrı SDR materyal; kullanıcı cyan grid fiziksel testini başarılı buldu.
 - Mor DistantFrames: sonlu çizgi piksel kapsamı/kenar ve uç filtreleme shader'ı; 4 cm çekirdek, 8–18 m fade.
-- ArenaViolet SDR mor; 12 destek quad'ı/tek mesh; stereo makroları; global AA/Bloom ve mavi SideRails değişmedi.
+- ArenaViolet SDR mor; 12 destek quad'ı/tek mesh; kullanıcı mor çizgilerin fiziksel olarak düzgün göründüğünü doğruladı.
 - Dekorasyonda collider/ışık yok; Ignore Raycast; zemin yüksekliği ve XR Origin korunur.
 - HDR turuncu Unlit hedef; mevcut beyaz _BaseColor flash/collider korunur; bağımsız ince cyan/mavi lazerler.
 - Global Bloom: yoğunluk 0,15, eşik 1,3, scatter 0,35, Quarter, dört iterasyon; kamera post-processing açık.
 - NeonArenaSceneSetup idempotent; yeni paket, dış asset, font, animasyon veya oyun mekaniği eklenmedi.
+- RailsFix: aynı StableNeonLines shader'ı, dört Z yönlü YZ quad; 4 cm çekirdek / 8–18 m fade / ayrı SDR StableRails materyali.
 - Windows-UI silindi: yaklaşık 178,3 MiB; fiziksel olarak doğrulanmış Windows-Audio'ın 333 dosyası korundu.
 
 ## Mevcut aşama ve sıradaki görev
-- Kullanıcı Windows-NeonFix cyan grid ve tüm oyun sistemlerini doğruladı; yalnız mor çizgiler parçalı göründü.
-- Mor çizgi düzeltmesi uygulama/test/build tamam; Quest 3 fiziksel testi bekliyor.
-- Güncel commit için `git log -1`; yeni EXE `Builds/Windows-NeonLinesFix/NeonReflexVR.exe`.
-- Sıradaki: mor yatay/dikey çizgiler, yakın/uzak ve yavaş baş hareketi, fade/konfor/akıcılık kontrolü.
-- Windows-NeonFix ve önceki build'ler korundu; bu görevde eski build temizliği yapılmadı.
+- Kullanıcı cyan grid ve mor dekor fiziksel testlerini doğruladı; en dış Side Rails çizgileri parçalı göründü.
+- Dış ray düzeltmesi uygulama/test/build tamam; Quest 3 fiziksel testi bekliyor.
+- Güncel commit için `git log -1`; yeni EXE `Builds/Windows-RailsFix/NeonReflexVR.exe`.
+- Sıradaki: dış alt/üst raylar, Z yönü, yakın/uzak ve baş hareketi, renk/fade/konfor/akıcılık kontrolü.
+- Windows-NeonLinesFix ve önceki build'ler korundu; eski build temizliği yapılmadı.
 
 ## Doğrulama ve bilinen sorunlar
-- 63/63 EditMode geçti: 61 mevcut regresyon + mor materyal/shader/fade ve yatay/dikey mesh filtre koordinatı testleri.
-- Derleme başarılı; Windows-NeonLinesFix Development build 0 hata / 20 bilinen uyarı.
+- 65/65 EditMode geçti: 63 mevcut regresyon + ray materyali/lazer ayrımı ve Z quad alanı/filtre koordinatı testleri.
+- Derleme başarılı; Windows-RailsFix Development build 0 hata / 20 bilinen uyarı.
 - Console 0 hata / 26 uyarı; URP reflection/shadow array boyutu uyarıları Editor oturumunda tekrarlanıyor.
-- Mor çizgi masaüstü kamera önizlemesi incelendi; shader hatası yok; stereo cihaz testi yerine geçmez.
-- Fiziksel genel performans kabul edilebilir; GPU/kare hızı ölçülmedi. Mor çizgi cihaz testi bekliyor.
+- Ray önizlemesi incelendi; mevcut grid/çizgi shader'ları, mor/grid mesh ve materyalleri, lazer/input kodu korunur.
+- Global AA/Bloom değişmedi; önceki performans kabul edilebilir; GPU ölçülmedi. Dış ray cihaz testi bekliyor.
 - Recenter, takip kaybı, odak kaybı ve uzun süreli kararlılık ayrıca takip edilir.
 - Builds, Temp/Library, `.utmp`, `Assets/_Recovery` Git'e yüklenmez; [ROADMAP](ROADMAP.md).

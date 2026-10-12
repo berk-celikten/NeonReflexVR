@@ -126,7 +126,7 @@ namespace NeonReflexVR.Tests
             {
                 Assert.That(renderer.sharedMaterial, Is.Not.Null);
                 Assert.That(renderer.sharedMaterial.shader.name, Is.EqualTo(renderer.name == "Neon Grid"
-                    ? "NeonReflexVR/Stable Neon Grid" : renderer.name == "Distant Frames"
+                    ? "NeonReflexVR/Stable Neon Grid" : (renderer.name == "Distant Frames" || renderer.name == "Side Rails")
                     ? "NeonReflexVR/Stable Neon Lines" : "Universal Render Pipeline/Unlit"));
                 Assert.That(EditorUtility.IsPersistent(renderer.sharedMaterial), Is.True);
             }

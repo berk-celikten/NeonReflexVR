@@ -44,13 +44,7 @@ namespace NeonReflexVR.Editor
             root.layer = 2; // Ignore Raycast; children also have no colliders.
             ConfigureGrid(root);
             ConfigurePurpleLines(root);
-            var rails = new Strips();
-            foreach (var x in new[] { -5f, 5f })
-            {
-                rails.Add(new Vector3(x, 0.035f, -6), new Vector3(x, 0.035f, 10), Vector3.up, 0.03f);
-                rails.Add(new Vector3(x, 5.8f, -6), new Vector3(x, 5.8f, 10), Vector3.down, 0.025f);
-            }
-            MeshObject(root, "Side Rails", rails, blue);
+            ConfigureSideRails(root);
             foreach (var shooter in shooters)
             {
                 var line = shooter.Laser;
@@ -154,6 +148,43 @@ namespace NeonReflexVR.Editor
             }
             MeshObject(root, "Distant Frames", frames, material);
         }
+        [MenuItem("NeonReflexVR/Fix Outer Side Rails")]
+        public static void FixSideRails()
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            if (EditorApplication.isPlaying || EditorApplication.isCompiling || scene.isDirty || scene.path != GameSceneSetup.ScenePath)
+                throw new InvalidOperationException("Open saved GameScene outside Play Mode.");
+            ConfigureSideRails(scene.GetRootGameObjects().Single(x => x.name == "Neon Arena"));
+            EditorSceneManager.MarkSceneDirty(scene);
+            if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Scene save failed.");
+        }
+        static void ConfigureSideRails(GameObject root)
+        {
+            var shader = Shader.Find("NeonReflexVR/Stable Neon Lines");
+            var blue = AssetDatabase.LoadAssetAtPath<Material>(Folder + "/ArenaBlue.mat");
+            if (shader == null || blue == null) throw new InvalidOperationException("Stable lines shader and existing blue material required.");
+            const string path = Folder + "/StableRails.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (material == null) { material = new Material(shader) { name = "StableRails" }; AssetDatabase.CreateAsset(material, path); }
+            // Preserve blue RGB ratios while keeping these decorative lines below Bloom threshold.
+            var color = blue.GetColor("_BaseColor");
+            color /= Mathf.Max(1f, Mathf.Max(color.r, Mathf.Max(color.g, color.b)));
+            color.a = 1f;
+            material.SetColor("_BaseColor", color);
+            material.SetFloat("_LineWidth", 0.04f);
+            material.SetFloat("_FadeStart", 8f);
+            material.SetFloat("_FadeEnd", 18f);
+            EditorUtility.SetDirty(material);
+            AssetDatabase.SaveAssetIfDirty(material);
+            var rails = new Strips();
+            foreach (var x in new[] { -5f, 5f })
+            {
+                // YZ support planes face the playable interior; unlike direction x back, this cross is nonzero.
+                rails.AddFiltered(new Vector3(x, 0.035f, -6), new Vector3(x, 0.035f, 10), Vector3.right);
+                rails.AddFiltered(new Vector3(x, 5.8f, -6), new Vector3(x, 5.8f, 10), Vector3.right);
+            }
+            MeshObject(root, "Side Rails", rails, material);
+        }
         static Material MaterialAsset(string name, Color color)
         {
             var path = Folder + "/" + name + ".mat";
@@ -202,12 +233,15 @@ namespace NeonReflexVR.Editor
             public readonly List<Vector3> vertices = new List<Vector3>();
             public readonly List<int> indices = new List<int>();
             public readonly List<Vector3> lineData = new List<Vector3>();
-            public void AddFiltered(Vector3 a, Vector3 b)
+            public void AddFiltered(Vector3 a, Vector3 b) => AddFiltered(a, b, Vector3.back);
+            public void AddFiltered(Vector3 a, Vector3 b, Vector3 normal)
             {
                 // Invisible support margin allows the fragment filter to cover subpixel edges/end caps.
                 const float padding = 0.08f;
                 var direction = (b - a).normalized;
-                var side = Vector3.Cross(direction, Vector3.back) * padding;
+                var across = Vector3.Cross(direction, normal);
+                if (across.sqrMagnitude < 0.0001f) throw new ArgumentException("Line direction and support normal must not be parallel.");
+                var side = across.normalized * padding;
                 var halfLength = Vector3.Distance(a, b) * 0.5f;
                 var start = vertices.Count;
                 vertices.Add(a - direction * padding - side); vertices.Add(a - direction * padding + side);

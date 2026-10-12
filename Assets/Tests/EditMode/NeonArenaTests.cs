@@ -57,7 +57,7 @@ namespace NeonReflexVR.Tests
                 Assert.That(mesh.vertexCount, Is.LessThan(150));
                 Assert.That(EditorUtility.IsPersistent(renderer.sharedMaterial), Is.True);
                 Assert.That(renderer.sharedMaterial.shader.name, Is.EqualTo(renderer.name == "Neon Grid"
-                    ? "NeonReflexVR/Stable Neon Grid" : renderer.name == "Distant Frames"
+                    ? "NeonReflexVR/Stable Neon Grid" : (renderer.name == "Distant Frames" || renderer.name == "Side Rails")
                     ? "NeonReflexVR/Stable Neon Lines" : "Universal Render Pipeline/Unlit"));
                 Assert.That(renderer.shadowCastingMode, Is.EqualTo(ShadowCastingMode.Off));
             }
@@ -135,6 +135,54 @@ namespace NeonReflexVR.Tests
             }
             Assert.That(horizontal, Is.EqualTo(6));
             Assert.That(vertical, Is.EqualTo(6));
+        }
+        [Test]
+        public void RailsReuseStableShaderWithoutChangingSharedBlueLaserMaterial()
+        {
+            var material = roots.Single(x => x.name == "Neon Arena").transform.Find("Side Rails").GetComponent<Renderer>().sharedMaterial;
+            var blue = AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/NeonArena/ArenaBlue.mat");
+            Assert.That(material, Is.EqualTo(AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/NeonArena/StableRails.mat")));
+            Assert.That(material, Is.Not.SameAs(blue));
+            Assert.That(material.shader.name, Is.EqualTo("NeonReflexVR/Stable Neon Lines"));
+            Assert.That(material.shader.isSupported, Is.True);
+            Assert.That(ShaderUtil.ShaderHasError(material.shader), Is.False);
+            Assert.That(material.GetFloat("_LineWidth"), Is.EqualTo(0.04f));
+            Assert.That(material.GetFloat("_FadeStart"), Is.EqualTo(8f));
+            Assert.That(material.GetFloat("_FadeEnd"), Is.EqualTo(18f));
+            var color = material.GetColor("_BaseColor");
+            var original = blue.GetColor("_BaseColor");
+            Assert.That(color.maxColorComponent, Is.LessThanOrEqualTo(1f));
+            Assert.That(color.r / color.b, Is.EqualTo(original.r / original.b).Within(0.0001f));
+            Assert.That(color.g / color.b, Is.EqualTo(original.g / original.b).Within(0.0001f));
+            var right = roots.SelectMany(x => x.GetComponentsInChildren<VRRaycastShooter>()).Single(x => x.name == "Right Controller");
+            Assert.That(right.Laser.sharedMaterial, Is.SameAs(blue));
+        }
+        [Test]
+        public void ZParallelRailsHaveNonDegeneratePaddedQuadsAndFiniteFilterCoordinates()
+        {
+            var mesh = roots.Single(x => x.name == "Neon Arena").transform.Find("Side Rails").GetComponent<MeshFilter>().sharedMesh;
+            var vertices = mesh.vertices;
+            var coordinates = new System.Collections.Generic.List<Vector3>();
+            mesh.GetUVs(0, coordinates);
+            Assert.That(vertices.Length, Is.EqualTo(16));
+            Assert.That(mesh.triangles.Length, Is.EqualTo(24));
+            Assert.That(coordinates.Count, Is.EqualTo(16));
+            for (var i = 0; i < vertices.Length; i += 4)
+            {
+                var along = vertices[i + 3] - vertices[i];
+                var across = vertices[i + 1] - vertices[i];
+                Assert.That(Mathf.Abs(along.normalized.z), Is.GreaterThan(0.999f));
+                Assert.That(Mathf.Abs(across.normalized.y), Is.GreaterThan(0.999f));
+                Assert.That(Vector3.Cross(along, across).magnitude, Is.GreaterThan(2f));
+                Assert.That(Mathf.Abs(vertices[i].x), Is.EqualTo(5f));
+                Assert.That(vertices[i].x, Is.EqualTo(vertices[i + 2].x));
+                Assert.That(coordinates[i].x, Is.LessThan(-8f));
+                Assert.That(coordinates[i + 2].x, Is.GreaterThan(8f));
+                Assert.That(coordinates[i].y, Is.LessThan(-0.02f));
+                Assert.That(coordinates[i + 1].y, Is.GreaterThan(0.02f));
+                for (var corner = 0; corner < 4; corner++)
+                    Assert.That(coordinates[i + corner].z, Is.EqualTo(8f));
+            }
         }
         [Test]
         public void BloomIsLowCostAndBelowUiWhiteThresholdWithOneXrCamera()

@@ -64,7 +64,9 @@ Ana hedef Windows PC VR / Quest Link-Air Link'tir. Android APK/ADB dağıtımı 
 - [x] Grid aliasing düzeltmesi: tek quad, analitik AA, daha geniş/seyrek çizgiler, mesafe fade; 61/61 test ve NeonFix build.
 - [x] Kullanıcı Windows-NeonFix cyan grid'in düzgün olduğunu ve diğer oyun sistemlerinin çalıştığını doğruladı.
 - [x] Mor çizgi aliasing düzeltmesi: sonlu çizgi kapsam filtresi, SDR mor ve fade; 63/63 test, NeonLinesFix build.
-- [ ] Windows-NeonLinesFix mor yatay/dikey çizgi stabilitesi, mesafe geçişi ve performans fiziksel testi.
+- [x] Kullanıcı cyan grid ve Windows-NeonLinesFix mor dekor çizgilerini düzgün buldu; diğer oyun sistemleri çalışıyor.
+- [x] Dış Side Rails: Z quad geometrisi, mevcut filtre shader'ı ve ayrı SDR materyal; 65/65 test ve Windows-RailsFix build.
+- [ ] Windows-RailsFix dış alt/üst kenar çizgileri, stereo stabilite, renk/fade ve performans fiziksel testi.
 - [ ] Okunabilirlik, ses dengesi, kullanıcı konforu ve sınırları doğrula.
 - [ ] Odağı kaybetme, uygulamaya geri dönme ve yeniden oynama akışlarını test et.
 
