@@ -1,33 +1,47 @@
 # NeonReflexVR
 
-Windows bilgisayarda çalışan, Meta Quest 3'ün Quest Link veya Air Link üzerinden kullanıldığı küçük bir PC VR arcade oyunu. Hedef, 60 saniyelik hedef vurma oyun döngüsüdür. Ana platform kullanıcı kararıyla Android standalone'dan Windows PC VR'ye değiştirilmiştir.
+NeonReflexVR, Windows bilgisayarda çalışan 60 saniyelik bir PC VR hedef vurma oyunudur. Meta Quest 3, **Quest Link veya Air Link** üzerinden kullanılır. **Standalone Quest APK değildir.**
 
-## Teknolojiler
+## Oyna
+Windows bilgisayarda Meta Horizon Link kurulu ve etkin OpenXR runtime olarak seçili olmalıdır. Gözlükten bilgisayarın Quest Link/Air Link ana ekranına bağlanın.
 
-Unity 6.3 LTS `6000.3.26f1`, C#, URP `17.3.0`, XR Interaction Toolkit `3.3.2`, OpenXR Plugin `1.16.1`, XR Plug-in Management `4.6.1`, Input System `1.20.0`, Test Framework `1.6.0`.
+1. **NeonReflexVR-Windows-PCVR-v1.0.0-rc1.zip** dosyasını tamamen çıkarın.
+2. Çıkarılan klasördeki **NeonReflexVR.exe** uygulamasını çalıştırın.
+3. EXE, NeonReflexVR_Data, UnityPlayer.dll, MonoBleedingEdge ve diğer runtime dosyalarını birlikte tutun. EXE'yi tek başına taşımayın; ZIP içinden doğrudan çalıştırmayın.
+4. Gözlüğü takıp iki kontrolcüyü hazır edin. Ana menüde sağ **A** tuşuna basarak turu başlatın.
 
-Yerel Unity CLI `1.0.0-beta.12`, mevcut `com.unity.pipeline` `0.8.0-exp.1` paketiyle Editor'a bağlanır. Yeni deneysel XR veya Meta All-in-One paketi eklenmemiştir.
+[Windows kurulum yönergesi](docs/WINDOWS_INSTALL.md) · [Release notları](RELEASE_NOTES.md)
 
-## Başlangıç noktası
+## Kontroller ve amaç
+- Sol veya sağ **trigger**: her basışta tek atış; iki el birlikte kullanılabilir.
+- Sağ **A**: ana menüde başlat; GameOver'da yeni tur başlat.
+- Tur **60 saniye** sürer. Bir hedefin ilk başarılı isabeti **1 puan** verir; aynı hedefe çift isabet ikinci puan vermez.
+- Üç özgün Blender hedefi bulunur: **HexCore, Drone, Capsule**. Aynı anda en fazla üç hedef vardır.
+- Hedefler başlangıç bakışının önündeki güvenli alanda rastgele oluşur. Vurulan hedef beyaz flash sonrası yenilenir; vurulmayan hedef yaklaşık 5 saniyede değişir.
+- HUD skor/süreyi, GameOver ekranı son skoru gösterir. Süre dolunca hedefler temizlenir.
+- Çift silah, lazer, ses ve başarılı isabette ilgili kontrolcüde hafif titreşim bulunur. Teleport veya smooth locomotion yoktur.
 
-Yeni oturumda önce [docs/STATUS.md](docs/STATUS.md), ardından yalnızca görevle ilgili [ROADMAP aşaması](docs/ROADMAP.md) okunur. Çalışma kuralları [AGENTS.md](AGENTS.md) içindedir.
+Oyun alanını rahat ve güvenli tutun. Headset tracking hazır değilken A ile tur başlamaz.
 
-Unity Hub üzerinden projeyi `6000.3.26f1` ile açın. PC VR hedefi Windows x64 / Mono'dur. Windows XR ayarlarında OpenXR Loader, başlangıçta XR başlatma ve Oculus Touch Controller Profile etkindir.
+## Yayın adayı durumu
+**v1.0.0-rc1** ilk Windows yayın adayıdır; henüz final v1.0.0 veya yayımlanmış GitHub/itch.io sürümü değildir.
 
-PC'de Meta Horizon Link'i aktif OpenXR runtime yapın ve gözlükten Quest Link/Air Link bağlantısını başlatın. Ardından `Assets/Scenes/GameScene.unity` ile Unity Play Mode'u veya `Builds/Windows-Perf/NeonReflexVR.exe` uygulamasını kullanın. EXE, yanındaki Data klasörü ve DLL'lerle birlikte tutulmalıdır. Temel PC VR kullanımında gözlüğe APK yükleme/ADB yetkilendirmesi yapılmaz. [Meta Link yönergesi](https://developers.meta.com/vr/documentation/unity/unity-link/).
+Kullanıcı Windows-TargetVariants Development sürümünde üç hedefi, merkez/kenar isabetlerini, beyaz flash/yenilemeyi, HUD rakamlarını, iki silah/lazeri, ses/haptic, 60 saniye ve GameOver/restart'ı Quest 3 + Link ile doğruladı. Genel akıcılık ve görsel konfor kabul edildi.
 
-## Mevcut durum
+Release Candidate'ın fiziksel cihaz testi bekliyor. 5–10 tur uzun kararlılık, gerçek recenter/tracking kaybı ve focus dönüşü ayrıca doğrulanmalıdır. Genel akıcılık onayı ayrıntılı CPU/GPU benchmark sonucu değildir.
 
-GameScene'de XR Origin, tek Main Camera/Audio Listener, iki tracked kontrolcü, zemin ve çalışma sırasında üretilen üç küresel hedef vardır. Eski test küpleri yalnız sahneden kaldırılmıştır; kaynakları korunur. Input System TrackedPoseDriver bileşenleri resmî XRI Head/Left/Right action referanslarını kullanır. Materyaller URP Unlit'tir. SampleScene korunur ve GameScene build listesinde ilk sıradadır.
+Normal release'de otomatik performans raporu oluşturulmaz; Unity'nin normal Player.log mekanizması korunur.
 
-Windows Development build başarılıdır; kullanıcı Link üzerinden VR görüntü, baş ve iki kontrolcü takibini fiziksel gözlükte doğrulamıştır. Göz yüksekliği, recenter, tracking kaybından dönüş ve uzun süreli kararlılık testleri beklemektedir. Her iki trigger ile bağımsız tek Raycast atışı, ayrı kısa lazerler ve hedeflerde kısa beyaz isabet geri bildirimi hazırdır. Çift el fiziksel testinin 7 kontrolü kullanıcı tarafından doğrulandı. TargetSpawner geçerli HMD başlangıç bakışının önündeki alanda üç rastgele sphere hedef oluşturur. Slotlar bölgeye kilitlenmez; az dolu/az kullanılan bölgelere ağırlık verilir ve yenilemede farklı bölge tercih edilir; tek isabet sonrası beyaz flash ile, vurulmazsa 5 saniye sonra yeniler. Rastgele hedef oynanışı kullanıcı tarafından fiziksel olarak doğrulandı. GameManager Ready menüsünde sağ A ile başlayan 60 saniyelik tur, dinamik hedef başına +1 puan, GameOver temizliği ve sağ A ile restart yönetir; test küpleri puan kazandırmaz. World Space UI başlangıç yönergeleri, SCORE/TIME HUD ve GAME OVER/FINAL SCORE gösterir; koyu panel, cyan/turuncu vurgu ve yerleşik font kullanılır. RandomFix hedef dağılımı, çift el/skor, 60 saniye ve A restart kullanıcı tarafından fiziksel olarak doğrulandı. 6.1 menü/HUD ve A akışı kullanıcı tarafından fiziksel olarak doğrulandı. Dört düşük seviyeli özgün prosedürel ses ve başarılı dinamik isabette yalnız ateş eden kontrolcü için hafif haptics eklendi; 6.2 ses/titreşim kullanıcı tarafından fiziksel olarak doğrulandı; koyu neon arena, cyan/mavi/mor grid ve çerçeveler, HDR turuncu hedefler, ince lazerler ve kontrollü Bloom eklendi; 6.3 genel oynanış kullanıcı tarafından fiziksel olarak doğrulandı; uzak grid için analitik anti-aliasing ve mesafe fade eklendi, cyan grid fiziksel olarak doğrulandı; mor dekoratif çizgilere kapsam filtresi ve fade eklendi, mor çizgiler de fiziksel olarak doğrulandı; dış Side Rails çizgilerine filtreleme ve uygun Z quad geometrisi uygulandı, Windows-RailsFix çizgiler ve oynanış kullanıcı tarafından fiziksel olarak doğrulandı. Development Player performans tanılaması ve odak/pause sırasında sayaç/hedef ömrü durdurma eklendi; gerçek FPS/CPU/GPU/kararlılık testleri bekliyor. Ölçüm raporları ve sınırları [docs/PERFORMANCE.md](docs/PERFORMANCE.md) içinde açıklanır; locomotion yoktur.
+## Geliştirme
+Unity **6.3 LTS 6000.3.26f1**, C#, URP **17.3.0**, Windows x64 / Mono. XRI **3.3.2**, OpenXR **1.16.1**, XR Management **4.6.1**, Input System **1.20.0**, Test Framework **1.6.0** kullanılır.
 
-Sahne ve ilk ateş etme sistemi için 73/73 EditMode testi geçti. Windows build 0 hata / 20 uyarıyla tamamlandı; URP geçiş uyarıları ve diğer bilinen durumlar STATUS'ta kayıtlıdır. Kurulum otomasyonu `Assets/Editor/Setup/GameSceneSetup.cs`, ateş etme ekleme otomasyonu `Assets/Editor/Setup/ShootingSceneSetup.cs`; testler `Assets/Tests/EditMode` altındadır.
+Unity Hub üzerinden belirtilen sürümle açın; başlangıç sahnesi Assets/Scenes/GameScene.unity olmalıdır. Mevcut XR/OpenXR ve input ayarlarını koruyun. Development diagnostics yönergeleri [PERFORMANCE](docs/PERFORMANCE.md) içindedir; bunlar normal oyuncu başlangıç talimatı değildir.
 
-## Git ve lisanslar
+Yeni görevde önce kısa [STATUS](docs/STATUS.md), sonra ilgili [ROADMAP](docs/ROADMAP.md) bölümünü okuyun. Kurallar [AGENTS.md](AGENTS.md). Blender silah/hedeflerinin özgün üretim kaynakları Tools/Blender/ altındadır.
 
-Repository [GitHub üzerinde PUBLIC](https://github.com/berk-celikten/NeonReflexVR) kalır. Yayın hedefi itch.io için Windows build paketidir. `Assets`, `.meta`, `Packages` ve `ProjectSettings` korunur; build çıktıları, geçici dosyalar ve kurtarma yedekleri Git'e yüklenmez.
+## Lisanslar ve dağıtım
+[PUBLIC kaynak repository](https://github.com/berk-celikten/NeonReflexVR). Build/ZIP çıktıları kaynak Git repository'sine commit edilmez.
 
-Unity şablon ve resmî XRI input action içeriğinin telif bildirimleri ve Unity Companion License'ın tam metni [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) içindedir. Bu lisans ilgili Unity içeriği ve türevlerine uygulanır; özgün NeonReflexVR kodunun tamamına atanmaz. Proje genelinde özgün içerik için açık kaynak lisansı henüz seçilmemiştir.
+Unity şablon ve resmî XRI input asset'inin telif/lisans bildirimleri ile Unity Companion License'ın tam metni [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES.md) içindedir. Dağıtım ZIP'i ayrıca runtime paketlerinin bildirimlerini THIRD_PARTY_LICENSES/ altında taşır. Unity/XRI lisansları bütün özgün NeonReflexVR içeriğine atanmış değildir.
 
-Eski Android XR ayarları korunmuştur. İlk Android APK build başarılı olmuş, cihaz ADB'de görünmediği için yükleme/test yapılmamıştır; bu dağıtım yolu ana hedeften çıkarılmıştır.
+Blender silah ve hedefleri bu proje için üretilmiş özgün içeriktir. Özgün kod/içerik için yeni bir açık kaynak lisansı atanmadı; PUBLIC olması yeniden kullanım lisansı verildiği anlamına gelmez.

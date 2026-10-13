@@ -1,8 +1,9 @@
 # Performans ve VR kararlılık testi — 7.1
 
-## Kullanım
-- Quest Link açıkken `Builds/Windows-Perf/NeonReflexVR.exe` Development Player'ını başlat.
-- Tanılama otomatik çalışır; Editor ve normal release Player'da otomatik başlamaz. HUD'a ek bilgi koymaz.
+## Kullanım — yalnız geliştirme build'leri
+- Quest Link açıkken `Builds/Windows-TargetVariants/NeonReflexVR.exe` Development Player'ını başlat.
+- Windows-ReleaseCandidate normal oyuncu sürümüdür: otomatik diagnostics/perf logu beklenmez; normal Player.log korunur.
+- Development tanılama otomatik çalışır; Editor ve normal release Player'da otomatik başlamaz. HUD'a ek bilgi koymaz.
 - Rapor: `%USERPROFILE%/AppData/LocalLow/DefaultCompany/NeonReflexVR/Diagnostics/perf-*.log`.
 - Aynı `[PERF]` satırları `Player.log` içinde de bulunur; başlangıç satırı kesin rapor yolunu bildirir.
 - Yaklaşık 30 saniyede, durum/odak/pause değişiminde ve normal çıkışta rapor yazılır. Zorla kapanış son pencereyi kaybettirebilir.

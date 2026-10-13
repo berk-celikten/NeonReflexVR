@@ -91,3 +91,11 @@ Unless expressly provided otherwise, the Software under this license is made ava
 The bundled template's `Third Party Notices.md` contains only unfilled component placeholders and identifies no additional named third-party component. No placeholder is presented here as a verified dependency or license grant. The tracked project contains no additional imported Asset Store content identified by this review; the `licenseType: Store` metadata on some tutorial files is present in the bundled Unity template itself.
 
 Before adding or distributing further assets, package source, or a playable build, preserve and review the applicable copyright, license and third-party notices for that content.
+
+## Windows runtime distribution (v1.0.0-rc1)
+
+The Windows release-candidate ZIP carries this complete notice plus the installed runtime packages' unchanged LICENSE/Third Party Notices files in THIRD_PARTY_LICENSES/, with package versions listed in RuntimePackages.txt. These include the Unity XR, input, rendering/UI, collections/Burst/mathematics, JSON, Timeline and Visual Scripting dependencies included by the Windows player.
+
+The OpenXR loader's Apache 2.0 license text is also included in full (official source: https://www.apache.org/licenses/LICENSE-2.0.txt). Android-only notices in the OpenXR package identify their conditional scope; this candidate is a Windows PC VR player, not an Android APK.
+
+The NR-7 weapon and HexCore/Drone/Capsule target models are original NeonReflexVR Blender-generated content. No external model/font/texture download was introduced for this candidate. These third-party notices do not assign a new license to the original game code or models. No project-wide open-source license has been selected.
