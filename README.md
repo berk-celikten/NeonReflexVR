@@ -1,5 +1,7 @@
 # NeonReflexVR
 
+## 🎮 [itch.io’dan indir ve oyna](https://berk-celikten.itch.io/neonreflexvr)
+
 NeonReflexVR, Windows bilgisayarda çalışan 60 saniyelik bir PC VR hedef vurma oyunudur. Meta Quest 3, **Quest Link veya Air Link** üzerinden kullanılır. **Standalone Quest APK değildir.**
 
 ## Oyna
@@ -24,7 +26,7 @@ Windows bilgisayarda Meta Horizon Link kurulu ve etkin OpenXR runtime olarak se�
 Oyun alanını rahat ve güvenli tutun. Headset tracking hazır değilken A ile tur başlamaz.
 
 ## Yayın adayı durumu
-**v1.0.0-rc1** ilk Windows yayın adayıdır; henüz final v1.0.0 veya yayımlanmış GitHub/itch.io sürümü değildir.
+**v1.0.0-rc1** ilk Windows yayın adayıdır; henüz final v1.0.0 değildir.
 
 Kullanıcı Windows-TargetVariants Development sürümünde üç hedefi, merkez/kenar isabetlerini, beyaz flash/yenilemeyi, HUD rakamlarını, iki silah/lazeri, ses/haptic, 60 saniye ve GameOver/restart'ı Quest 3 + Link ile doğruladı. Genel akıcılık ve görsel konfor kabul edildi.
 
